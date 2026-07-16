@@ -1,0 +1,12 @@
+# Personal planning notes — not for the public repo
+dev-notes/
+
+# OS cruft
+.DS_Store
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Local env/secrets, if you ever add a .env file
+.env

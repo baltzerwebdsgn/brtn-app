@@ -1,0 +1,47 @@
+services:
+  # This is your Web Server (Apache + PHP)
+  php-apache:
+    image: php:8.2-apache
+    container_name: cleaning_web
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8080:80"
+    command: sh -c "docker-php-ext-install pdo pdo_mysql && apache2-foreground"
+    networks:
+      - cleaning-network
+    depends_on:
+      - db
+
+  # This is your Database (MySQL)
+  db:
+    image: mysql:8.0
+    container_name: cleaning_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: cleaning_db
+    # We map port 3306 so you can connect to it from VS Code
+    ports:
+      - "3306:3306"
+    networks:
+      - cleaning-network
+
+  # This is your Database Management Tool (phpMyAdmin)
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: cleaning_pma
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+    networks:
+      - cleaning-network
+    depends_on:
+      - db
+
+networks:
+  cleaning-network:
+    driver: bridge
