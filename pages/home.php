@@ -1,4 +1,4 @@
-?php
+<?php
 // Logic specific to the Home page
 $stmt = $pdo->query("SELECT * FROM task_library LIMIT 10");
 $tasks = $stmt->fetchAll();

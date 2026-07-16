@@ -1,7 +1,4 @@
 <?php /** @var string $page */ ?>
-<link rel="stylesheet" href="includes/navBar.css">
-
-
     <nav class="bottom-nav">
         <a href="index.php?page=home" class="nav-link <?= ($page == 'home' || !isset($page)) ? 'active' : '' ?>">
             <span class="material-symbols-outlined">home</span>

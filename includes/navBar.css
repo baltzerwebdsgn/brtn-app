@@ -29,7 +29,7 @@ body {
   /* The Border: Using a very thin, semi-transparent white */
   border: 1px solid rgba(255, 255, 255, 0.6);
 
-  /* The Multi-Layer Shadow (The Secret Sauce)
+  /* The Multi-Layer Shadow
      1. Inset White: High-intensity light at -45 deg.
      2. Inset Dark: Subtle depth on the opposite side.
      3. Outer Dark: The 20px depth / 50px dispersion shadow.
