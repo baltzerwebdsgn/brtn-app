@@ -2,22 +2,17 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cleaning App</title>
+    <title>BRIGHT'N</title>
+    <link rel="stylesheet" href="includes/main.css">
     <link rel="stylesheet" href="includes/navBar.css">
-    <style>
-        body { font-family: sans-serif; padding: 20px; }
-        .task-card { 
-            background: white; 
-            padding: 15px; 
-            margin-bottom: 10px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
-        }
-        h1 { color: #333; }
-    </style>
 </head>
 <body>
-    
-
-</body>
-</html>
+<?php if (in_array($page, ['login','register', 'forgot-password'])): ?>
+    <img 
+    src="assets/brightn-logo.svg" 
+    alt="flat icon side view of a lemon wedge with sparkles replacing the top two center lemon wedges"
+    class="max-size-img"
+    />
+    <h1>BRIGHT'N</h1>
+    <p id="tagline">Household chores, brightened.</p>
+<?php endif; ?>

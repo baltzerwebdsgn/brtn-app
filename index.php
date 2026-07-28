@@ -1,9 +1,14 @@
 <?php
+ob_start();
+session_start();
 require_once 'includes/db.php';
+require_once 'includes/auth.php';
+$page = isset($_GET['page']) ? $_GET['page'] : 'login';
 include 'includes/header.php'; // Persistent top nav
-
-$page = isset($_GET['page']) ? $_GET['page'] : 'home';
-
+$publicPages = ['login', 'register'];
+if (!in_array($page, $publicPages)) {
+    requireLogin();
+}
 switch ($page) {
     case 'breakdown':
         include 'pages/breakdown.php';
@@ -14,14 +19,20 @@ switch ($page) {
     case 'settings':
         include 'pages/settings.php';
         break;
-    default:
+    case 'home':
         include 'pages/home.php';
+        break;
+    case 'register':
+        include 'pages/register.php';
+        break;
+    case 'logout':
+        include 'pages/logout.php';
+        break;
+    default:
+        include 'pages/login.php';
         break;
 }
 
 include 'includes/footer.php'; // Persistent bottom nav
-// // This pulls your first 10 tasks
-// $stmt = $pdo->query("SELECT * FROM task_library LIMIT 10");
-// $tasks = $stmt->fetchAll();
 ?>
 

@@ -1,4 +1,5 @@
 <?php /** @var string $page */ ?>
+<?php if (!in_array($page, ['login', 'register'])): ?>
     <nav class="bottom-nav">
         <a href="index.php?page=home" class="nav-link <?= ($page == 'home' || !isset($page)) ? 'active' : '' ?>">
             <span class="material-symbols-outlined">home</span>
@@ -16,5 +17,6 @@
             <span class="material-symbols-outlined">settings</span>
         </a>
     </nav>
+<?php endif; ?>
 </body>
 </html>
