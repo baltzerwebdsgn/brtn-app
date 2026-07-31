@@ -56,7 +56,6 @@ a.nav-link {
 }
 
 .material-symbols-outlined {
-  color: #323A59;
   /* Specific to variable symbols */
   font-variation-settings:
     'FILL' 1,
@@ -77,4 +76,7 @@ a.active {
   border-radius: 50px;
   border: 2px solid #323A59;
   background: #FFFFFF;
+}
+.navbar-icon {
+  color: #323A59;
 }

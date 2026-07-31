@@ -4,14 +4,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
-    $stmt->execute(['username' => $username]);
+    $stmt = $pdo->prepare("
+    SELECT users.*, households.household_name 
+    FROM users 
+    LEFT JOIN households ON users.household_id = households.id
+    WHERE users.username = :identifier1 OR users.email = :identifier2
+    ");
+    $stmt->execute([
+        'identifier1' => $username,
+        'identifier2' => $username,
+        ]);
     $user = $stmt->fetch();
  
     if ($user && password_verify($password, $user['password_hash'])) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['role'] = $user['role'];
         $_SESSION['household_id'] = $user['household_id'];
+        $_SESSION['name'] = $user['name'];
+        $_SESSION['household_name'] = $user['household_name'];
         header('Location: index.php?page=home');
         exit;
     } else {
@@ -23,19 +33,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="task-card">
             <!-- Username / Email -->
             <div class="form-group" >
-                <label for="username"><b>Username</b></label>
+                <label for="username" class="subheading">Username</label>
                 <input
                     type="text"
                     id="username"
                     name="username"
-                    placeholder="Enter your username"
+                    placeholder="Enter your username or email"
                     required
                     autocomplete="username"
+                    class="login"
                 >
             </div>
             <!-- Password Field -->
             <div class="form-group">
-                <label for="password"><b>Password</b></label>
+                <label for="password" class="subheading">Password</label>
                 <input 
                     type="password"
                     id="password"
@@ -43,10 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     placeholder="Enter your password"
                     required
                     autocomplete="current-password"
+                    class="login"
                 >
             </div>
             <div class="form-group">
-                <button type="submit" class="active" id="loginbtn">Log in</button>
+                <button type="submit" class="btn-primary active" id="loginbtn">Log in</button>
             </div>
             <?php if ($error): ?>
                 <p class="danger"><?= htmlspecialchars($error) ?></p>

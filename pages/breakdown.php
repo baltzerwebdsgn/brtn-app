@@ -23,14 +23,21 @@ $tasks = $stmt->fetchAll();
 ?>
 
 <div class="filter-section">
-    <h2>Task Breakdown</h2>
-    
-    <div class="filter-group">
-        <a href="index.php?page=breakdown&filter=All" class="chip <?= $filter == 'All' ? 'active' : '' ?>">All</a>
-        <a href="index.php?page=breakdown&filter=Daily" class="chip <?= $filter == 'Daily' ? 'active' : '' ?>">Daily</a>
-        <a href="index.php?page=breakdown&filter=Weekly" class="chip <?= $filter == 'Weekly' ? 'active' : '' ?>">Weekly</a>
-        <a href="index.php?page=breakdown&filter=Monthly" class="chip <?= $filter == 'Monthly' ? 'active' : '' ?>">Monthly</a>
-    </div>
+    <details class="filter-dropdown" open>
+        <summary class="filter-summary">
+            Frequency
+            <span class="material-symbols-outlined chevron">keyboard_arrow_up</span>
+        </summary>
+        <div class="filter-group">
+            <a href="index.php?page=breakdown&filter=All" class="chip <?= $filter == 'All' ? 'chip-active' : '' ?>">All</a>
+            <a href="index.php?page=breakdown&filter=Daily" class="chip <?= $filter == 'Daily' ? 'chip-active' : '' ?>">Daily</a>
+            <a href="index.php?page=breakdown&filter=Weekly" class="chip <?= $filter == 'Weekly' ? 'chip-active' : '' ?>">Weekly</a>
+            <a href="index.php?page=breakdown&filter=Monthly" class="chip <?= $filter == 'Monthly' ? 'chip-active' : '' ?>">Monthly</a>
+        </div>
+    </details>
+</div>
+<div class="hide-done-btn">
+    <button class="chip">Hide Done</button>
 </div>
 
 <div class="task-list">
@@ -38,9 +45,15 @@ $tasks = $stmt->fetchAll();
         <div class="task-card">
             <div class="task-info">
                 <strong><?= htmlspecialchars($task['name']) ?></strong>
-                <span><?= htmlspecialchars($task['room']) ?></span>
+                <a>
+                    <span class="material-symbols-outlined info-icon">
+                        info
+                    </span>
+                </a>
             </div>
             <div class="task-meta">
+                <span><?= htmlspecialchars($task['room']) ?></span>
+                    &middot;
                 <?= htmlspecialchars($task['total_time']) ?>m
             </div>
         </div>

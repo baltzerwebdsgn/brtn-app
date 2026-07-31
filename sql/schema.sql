@@ -93,6 +93,7 @@ CREATE TABLE `task_library` (
 CREATE TABLE `users` (
   `id` int NOT NULL,
   `username` varchar(50) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
   `password_hash` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
