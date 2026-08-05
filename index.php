@@ -3,6 +3,7 @@ ob_start();
 session_start();
 require_once 'includes/db.php';
 require_once 'includes/auth.php';
+require_once 'includes/functions.php';
 $page = isset($_GET['page']) ? $_GET['page'] : 'login';
 include 'includes/header.php'; // Persistent top nav
 $publicPages = ['login', 'register','terms'];

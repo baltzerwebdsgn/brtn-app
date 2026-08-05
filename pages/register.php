@@ -39,22 +39,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         try {
+            // Insert the default tasks with household
             $stmt = $pdo->prepare("INSERT INTO households(household_name) VALUES (:household_name)");
             $stmt->execute([
                 'household_name' => $householdName,
             ]);
             $householdId = $pdo->lastInsertId();
 
+            $libraryTasks = $pdo->query("SELECT id FROM task_library")->fetchAll();
+
+            $seedStmt = $pdo->prepare("INSERT INTO household_tasks(household_id, library_task_id, is_active) VALUES (:household_id, :library_task_id, 1)");
+            foreach ($libraryTasks as $libraryTask) {
+                $seedStmt->execute([
+                    'household_id' => $householdId,
+                    'library_task_id' => $libraryTask['id'],
+                ]);
+            }
+            // Insert default zones list with the household
+            $defaultRooms = $pdo->query("SELECT DISTINCT room FROM task_library")->fetchAll();
+
+            $zoneStmt = $pdo->prepare("INSERT INTO zones(household_id, name) VALUES (:household_id, :name)");
+            foreach ($defaultRooms as $room) {
+                $zoneStmt->execute([
+                    'household_id' => $householdId,
+                    'name' => $room['room'],
+                ]);
+            }
+            // Add the user info to the user table and connect them to the household
             $stmt = $pdo->prepare("INSERT INTO users(username, email, name, password_hash, role, household_id) VALUES (:username, :email, :name, :password_hash, 'head', :household_id)");
-        $stmt->execute([
-            'username' => $username,
-            'email' => $email,
-            'name' => $name,
-            'password_hash' => $passwordHash,
-            'household_id' => $householdId,
-        ]);
-        header('Location: index.php?page=login');
-        exit;
+            $stmt->execute([
+                'username' => $username,
+                'email' => $email,
+                'name' => $name,
+                'password_hash' => $passwordHash,
+                'household_id' => $householdId,
+            ]);
+            header('Location: index.php?page=login');
+            exit;
         } catch (PDOException $e) {
             $error = 'That username or email is already taken.';
         }

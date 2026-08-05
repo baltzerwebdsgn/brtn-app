@@ -22,13 +22,6 @@ SET time_zone = "+00:00";
 --
 
 --
--- Dumping data for table `households`
---
-
-INSERT INTO `households` (`id`, `household_name`, `invite_code`, `created_at`) VALUES
-(1, 'Nikki & Partner Home', NULL, '2026-05-07 23:17:12');
-
---
 -- Dumping data for table `household_tasks`
 --
 

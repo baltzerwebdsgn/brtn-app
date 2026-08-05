@@ -43,14 +43,19 @@ CREATE TABLE `households` (
 CREATE TABLE `household_tasks` (
   `id` int NOT NULL,
   `household_id` int NOT NULL,
-  `library_task_id` int NOT NULL,
+  `library_task_id` int DEFAULT NULL,
   `custom_name` varchar(255) DEFAULT NULL,
   `custom_instructions` text,
   `last_completed` datetime DEFAULT NULL,
   `is_active` tinyint DEFAULT '1',
   `assigned_to` int DEFAULT NULL,
-  `custom_room` varchar(100) DEFAULT NULL
+  `custom_room` varchar(100) DEFAULT NULL,
+  `custom_frequency` varchar(20) DEFAULT NULL,
+  `custom_total_time` int DEFAULT NULL,
+  `custom_day_of_week` varchar(50) DEFAULT NULL,
+  `custom_week_of_month` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 -- --------------------------------------------------------
 
@@ -101,6 +106,18 @@ CREATE TABLE `users` (
   `household_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `zones`
+--
+
+CREATE TABLE `zones` (
+  `id` int NOT NULL,
+  `household_id` int NOT NULL,
+  `name` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 --
 -- Indexes for dumped tables
 --
@@ -145,6 +162,13 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `email` (`email`);
 
 --
+-- Indexes for table `zones`
+--
+ALTER TABLE `zones`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `household_id` (`household_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -179,6 +203,12 @@ ALTER TABLE `users`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `zones`
+--
+ALTER TABLE `zones`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
 -- Constraints for dumped tables
 --
 
@@ -188,6 +218,12 @@ ALTER TABLE `users`
 ALTER TABLE `household_tasks`
   ADD CONSTRAINT `household_tasks_ibfk_1` FOREIGN KEY (`household_id`) REFERENCES `households` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `household_tasks_ibfk_2` FOREIGN KEY (`library_task_id`) REFERENCES `task_library` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `zones`
+--
+ALTER TABLE `zones`
+  ADD CONSTRAINT `zones_ibfk_1` FOREIGN KEY (`household_id`) REFERENCES `households` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `task_history`

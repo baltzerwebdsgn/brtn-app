@@ -1,6 +1,13 @@
 <?php /** @var string $page */ ?>
 <?php
-$error = null;
+$roommateError = null;
+$roommateName = '';
+$roommateEmail = '';
+$roommateEmailTaken = false;
+$taskError = null;
+$taskName = '';
+$duplicateTask = null;
+
 // Allow the head of household to change the name of the household
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['household-name']) && $_SESSION['role'] === 'head') {
     $newHouseholdName = trim($_POST['household-name']);
@@ -41,13 +48,19 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name-roommate']) && $_
         header('Location: index.php?page=settings');
         exit;
     } catch (PDOException $e) {
-        $error = 'That email is already taken.';
+        $roommateEmailTaken = true;
+        $roommateError = 'That email is already taken.';
     }
 }
-
+//Query the all the housemates in the household
 $stmt = $pdo->prepare("SELECT * FROM users WHERE household_id = :household_id");
 $stmt->execute(['household_id' => $_SESSION['household_id']]);
 $housemates = $stmt->fetchAll();
+
+//Query the household's zones 
+$zoneStmt = $pdo->prepare("SELECT * FROM zones WHERE household_id = :household_id ORDER BY name");
+$zoneStmt->execute(['household_id' => $_SESSION['household_id']]);
+$zones = $zoneStmt->fetchAll();
 
 // Delete the roommate and make sure its only being done by the head of household
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_roommate_id']) && $_SESSION['role'] === 'head') {
@@ -62,6 +75,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_roommate_id'])
     header('Location: index.php?page=settings');
     exit;
 }
+// Add new task logic
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name-new-task']) && $_SESSION['role'] === 'head') {
+    $taskName = ucwords(strtolower(trim($_POST['name-new-task'])));
+    $taskDescription = trim($_POST['description-new-task'] ?? '');
+    $taskTime = (int) $_POST['time-new-task'];
+    $frequency = $_POST['frequency'] ?? null;
+    $zoneId = (int) $_POST['zone_id'];
+
+    $dupCheck = $pdo->prepare("
+    SELECT
+        COALESCE(household_tasks.custom_name, task_library.name) AS task_name,
+        COALESCE(household_tasks.custom_frequency, task_library.frequency) AS frequency,
+        COALESCE(household_tasks.custom_day_of_week, task_library.day_of_week) AS day_of_week,
+        COALESCE(household_tasks.custom_week_of_month, task_library.week_of_month) AS week_of_month
+    FROM household_tasks
+    LEFT JOIN task_library ON household_tasks.library_task_id = task_library.id
+    WHERE household_tasks.household_id = :household_id
+    AND household_tasks.is_active = 1
+    ");
+    $dupCheck->execute(['household_id' => $_SESSION['household_id']]);
+    $existingTasks = $dupCheck->fetchAll();
+
+    $duplicateTask = null;
+    foreach ($existingTasks as $existing) {
+        if (strcasecmp($existing['task_name'], $taskName) === 0) {
+            $duplicateTask = $existing;
+            break;
+        }
+    }
+
+    if ($duplicateTask) {
+        // Message rendered directly from $duplicateTask in the template 
+    } else {
+        $zoneLookup = $pdo->prepare("SELECT name FROM zones WHERE id = :id AND household_id = :household_id");
+        $zoneLookup->execute([
+            'id' => $zoneId,
+            'household_id' => $_SESSION['household_id'],
+        ]);
+        $zoneRow = $zoneLookup->fetch();
+        $zoneName = $zoneRow ? $zoneRow['name'] : null;
+
+        $dayOfWeek = null;
+        if ($frequency === 'weekly') {
+            $dayFields = ['sunday-new-task', 'monday-new-task', 'tuesday-new-task', 'wednesday-new-task', 'thursday-new-task', 'friday-new-task', 'saturday-new-task'];
+            $selectedDays = [];
+            foreach ($dayFields as $dayField) {
+                if (isset($_POST[$dayField])) {
+                    $selectedDays[] = ucfirst($_POST[$dayField]);
+                }
+            }
+            $dayOfWeek = implode(',', $selectedDays);
+        }
+
+        $weekOfMonth = ($frequency === 'monthly') ? ($_POST['monthly'] ?? null) : null;
+
+        $stmt = $pdo->prepare("INSERT INTO household_tasks(household_id, library_task_id, custom_name, custom_instructions, custom_room, custom_frequency, custom_total_time, custom_day_of_week, custom_week_of_month, is_active) VALUES (:household_id, NULL, :custom_name, :custom_instructions, :custom_room, :custom_frequency, :custom_total_time, :custom_day_of_week, :custom_week_of_month, 1)");
+        $stmt->execute([
+            'household_id' => $_SESSION['household_id'],
+            'custom_name' => $taskName,
+            'custom_instructions' => $taskDescription,
+            'custom_room' => $zoneName,
+            'custom_frequency' => $frequency,
+            'custom_total_time' => $taskTime,
+            'custom_day_of_week' => $dayOfWeek,
+            'custom_week_of_month' => $weekOfMonth,
+        ]);
+
+        $_SESSION['flash_task_name'] = $taskName;
+        $_SESSION['flash_task_frequency'] = $frequency;
+        header('Location: index.php?page=settings');
+        exit;
+    }
+}
+
 
 ?>
 
@@ -97,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_roommate_id'])
                 <h3 class="account-text">Score & Streak</h3>
             </span>
             <label class="switch">
-                <input type="checkbox">
+                <input type="checkbox" checked>
                 <span class="slider round"></span>
             </label>
         </div>
@@ -130,6 +217,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_roommate_id'])
         </a>
     </div>
 </div>
+
+<!-- Household name for all w/ head only permission to change the name -->
 <h2>Household</h2>
 <div class="task-card">
     <?php if ($_SESSION['role'] === 'head'): ?>
@@ -186,6 +275,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_roommate_id'])
         </div>
     </div>
 <?php endforeach; ?>
+
 <!-- Add Roommate Section for Head of Household User -->
 <?php if ($_SESSION['role'] === 'head'): ?>
     <h2>Add Roommate</h2>
@@ -199,6 +289,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_roommate_id'])
                         name="name-roommate"
                         placeholder="Enter roommate's name"
                         required
+                        value="<?= htmlspecialchars($roommateName) ?>"
                         class="addRoommate"
                     >
                 </div>
@@ -210,7 +301,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_roommate_id'])
                         name="email-roommate"
                         placeholder="e.g. roommate@brightnhouse.com"
                         required
-                        class="addRoommate"
+                        value="<?= htmlspecialchars($roommateEmail) ?>"
+                        class="addRoommate <?= $roommateEmailTaken ? 'input-error' : '' ?>"
                     >
                 </div>
                 <div class="form-group">
@@ -223,8 +315,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_roommate_id'])
                         </span>
                         </button>
                 </div>
-                <?php if ($error): ?>
-                    <p class="danger"><?= htmlspecialchars($error) ?></p>
+                <?php if ($roommateError): ?>
+                    <p class="danger"><?= htmlspecialchars($roommateError) ?></p>
                 <?php endif; ?>
         </form>
         <?php if (isset($_SESSION['flash_temp_password'])): ?>
@@ -236,5 +328,114 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_roommate_id'])
             unset($_SESSION['flash_temp_password']);
         ?>
         <?php endif; ?>
+    </div>
+<?php endif; ?>
+
+<!-- Add a custom task form for head of household only -->
+<?php if ($_SESSION['role'] === 'head'): ?>
+    <h2>Add a task</h2>
+    <div class="task-card">
+        <form action="" method="POST" class="add-task-form">
+                <div class="form-group" >
+                    <label for="name-new-task" class="subheading addTask">Name</label>
+                    <input
+                        type="text"
+                        id="name-new-task"
+                        name="name-new-task"
+                        placeholder="e.g. Take out trash"
+                        required
+                        value="<?= htmlspecialchars($taskName) ?>"
+                        class="addTask <?= $duplicateTask ? 'input-error' : '' ?>"
+                    >      
+                </div>
+                <div class="form-group">
+                    <label for="description-new-task" class="subheading addTask">Task Description(Optional)</label>
+                    <textarea id="description-new-task" name="description-new-task" placeholder="Add any notes or steps for this task" class="addTask"></textarea>
+
+                </div>
+                <div class="form-group">
+                    <label for="time-new-task" class="subheading addTask">Completion Time(Minutes)</label>
+                    <input 
+                        type="number"
+                        id="time-new-task"
+                        name="time-new-task"
+                        placeholder="1"
+                        class="addTask"
+                    >
+                </div>
+                <div class="form-group">
+                    <h2>Zone</h2>
+                    <?php foreach ($zones as $zone): ?>
+                        <input type="radio" id="zone-<?= $zone['id'] ?>" name="zone_id" value="<?= $zone['id'] ?>" class="addTask">
+                        <label for="zone-<?= $zone['id'] ?>" class="addTask chip"><?= htmlspecialchars($zone['name']) ?></label>
+                    <?php endforeach; ?>
+                </div>
+                <div class="form-group">
+                    <h2>Frequency</h2>
+                    <div>
+                        <input type="radio" id="daily-new-task" name="frequency" value="daily" class="addTask">
+                        <label for="daily-new-task" class="addTask chip">Daily</label>
+
+                        <input type="radio" id="weekly-new-task" name="frequency" value="weekly" class="addTask">
+                        <label for="weekly-new-task" class="addTask chip">Weekly</label>
+
+                        <input type="radio" id="monthly-new-task" name="frequency" value="monthly" class="addTask">
+                        <label for="monthly-new-task" class="addTask chip">Monthly</label>
+                    </div>
+                        <!-- The div below should only appear if weekly is choosen above -->
+                    <div> 
+                        <p class="text">Select what day(s) you want this task to happen on.</p>
+                        <input type="checkbox" id="sunday-new-task" name="sunday-new-task" value="sunday" class="addTask">
+                        <label for="sunday-new-task" class="addTask chip">Sunday</label>
+                        <input type="checkbox" id="monday-new-task" name="monday-new-task" value="monday" class="addTask">
+                        <label for="monday-new-task" class="addTask chip">Monday</label>
+                        <input type="checkbox" id="tuesday-new-task" name="tuesday-new-task" value="tuesday" class="addTask">
+                        <label for="tuesday-new-task" class="addTask chip">Tuesday</label>
+                        <input type="checkbox" id="wednesday-new-task" name="wednesday-new-task" value="wednesday" class="addTask">
+                        <label for="wednesday-new-task" class="addTask chip">Wednesday</label>
+                        <input type="checkbox" id="thursday-new-task" name="thursday-new-task" value="thursday" class="addTask">
+                        <label for="thursday-new-task" class="addTask chip">Thursday</label>
+                        <input type="checkbox" id="friday-new-task" name="friday-new-task" value="friday" class="addTask">
+                        <label for="friday-new-task" class="addTask chip">Friday</label>
+                        <input type="checkbox" id="saturday-new-task" name="saturday-new-task" value="saturday" class="addTask">
+                        <label for="saturday-new-task" class="addTask chip">Saturday</label>
+                    </div>
+                    <!-- This div below should only appear if monthly is choosen above -->
+                     <div>
+                        <p class="text">Select what week of the month you want this task to happen on.</p>
+                        <input type="radio" id="1st-week-new-task" name="monthly" value="1st" class="addTask">
+                        <label for="1st-week-new-task" class="addTask chip">1st</label>
+                        
+                        <input type="radio" id="2nd-week-new-task" name="monthly" value="2nd" class="addTask">
+                        <label for="2nd-week-new-task" class="addTask chip">2nd</label>
+
+                        <input type="radio" id="3rd-week-new-task" name="monthly" value="3rd" class="addTask">
+                        <label for="3rd-week-new-task" class="addTask chip">3rd</label>
+
+                        <input type="radio" id="4th-week-new-task" name="monthly" value="4th" class="addTask">
+                        <label for="4th-week-new-task" class="addTask chip">4th</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn-primary">
+                        <span>
+                            Save
+                        </span>
+                        </button>
+                </div>
+                <?php if ($duplicateTask): ?>
+                    <p class="danger">
+                        A task named "<strong><?= htmlspecialchars($duplicateTask['task_name']) ?></strong>" already exists — <strong><?= htmlspecialchars(formatFrequencyDetail($duplicateTask['frequency'], $duplicateTask['day_of_week'], $duplicateTask['week_of_month'])) ?></strong>.
+                    </p>
+                <?php endif; ?>
+        </form>
+        <?php if (isset($_SESSION['flash_task_name'])): ?>
+            <h3 class="success">Success!</h3>
+            <p class="success"><strong><?= htmlspecialchars($_SESSION['flash_task_name']) ?></strong> added to your <strong><?= htmlspecialchars($_SESSION['flash_task_frequency']) ?></strong> schedule.</p>
+            <?php
+                unset($_SESSION['flash_task_name']);
+                unset($_SESSION['flash_task_frequency']);
+            ?>
+        <?php endif; ?>     
     </div>
 <?php endif; ?>

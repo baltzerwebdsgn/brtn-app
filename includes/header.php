@@ -29,7 +29,7 @@
     <div class="home-title">
     <div class="home-title-text">
         <?php if(in_array($page,['home'])): ?>
-            <h1>Hi,<?= htmlspecialchars($_SESSION['name']) ?></h1>
+            <h1>Hi, <?= htmlspecialchars($_SESSION['name']) ?></h1>
             <h2 class="home-hn">of <?= htmlspecialchars($_SESSION['household_name']) ?></h2>
         <?php endif; ?>
         <?php if(in_array($page,['breakdown'])): ?>

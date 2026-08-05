@@ -19,5 +19,6 @@
         </a>
     </nav>
 <?php endif; ?>
+<script src="includes/main.js"></script>
 </body>
 </html>

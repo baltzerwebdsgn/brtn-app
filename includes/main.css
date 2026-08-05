@@ -59,9 +59,40 @@ h3 {
     display: flex;
     align-items: center;
     color: var(--color-ice700);
+    gap: 8px;
 }
 .task-meta {
     color: var(--color-ice500);
+}
+.task-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.task-status-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+.task-status-btn .material-symbols-outlined {
+    font-size: 49px;
+    color: var(--color-ice300);
+}
+.task-edit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.edit-task-btn, .remove-task-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--color-ice500);
+}
+.edit-task-btn .material-symbols-outlined,
+.remove-task-btn .material-symbols-outlined {
+    font-size: 49px;
 }
 .active {
     color: var(--color-ice900);
@@ -89,7 +120,9 @@ h3 {
 b {
     color: var(--color-ice900);
 }
-.input-error {
+input.addRoommate.input-error,
+input.addTask.input-error,
+input.reg.input-error {
     border: 2px solid var(--color-citrus-grapefruit);
 }
 .subheading {
@@ -100,7 +133,7 @@ b {
     margin-bottom: 8px;
 }
 
-input.reg, input.login, input.settings, input.addRoommate {
+input.reg, input.login, input.settings, input.addRoommate, input.addTask, textarea.addTask {
     width: 100%;
     padding: 12px 14px;
     border: 1px solid var(--color-ice100);
@@ -110,7 +143,7 @@ input.reg, input.login, input.settings, input.addRoommate {
     font-family: var(--font-body);
     color: var(--color-ice700);
 }
-input.reg:focus, input.login:focus, input.settings:focus, input.addRoommate:focus  {
+input.reg:focus, input.login:focus, input.settings:focus, input.addRoommate:focus, input.addTask:focus, textarea.addTask:focus  {
     outline: 2px solid var(--color-citrus-lemon);
     outline-offset: 2px;
     border-color: var(--color-citrus-lemon);
@@ -229,7 +262,7 @@ span.account-icon, span.info-icon, span.housemate-icon {
 }
 
 /* Hide default HTML checkbox */
-.switch input {
+.switch input, input.addTask[type="radio"], input.addTask[type="checkbox"] {
   opacity: 0;
   width: 0;
   height: 0;
@@ -387,13 +420,18 @@ input:checked + .slider:before {
     font-weight: 700; 
     padding: 10px 20px;
 }
-.chip-active {
+.chip-active, input.addTask:checked + label.addTask.chip {
     background-color: var(--color-ice900);
     color: var(--color-ice100);
 }
 button.chip {
     border: none;
     font-size: 1em;
+}
+label.addTask.chip {
+    display: inline-flex;
+    margin: 0 6px 6px 0;
+    cursor: pointer;
 }
 .hide-done-btn {
     display: flex;
