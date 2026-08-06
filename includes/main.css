@@ -94,6 +94,17 @@ h3 {
 .remove-task-btn .material-symbols-outlined {
     font-size: 49px;
 }
+.edit-task-btn {
+    text-decoration: none;
+}
+@keyframes task-updated-flash {
+    0% { color: var(--color-citrus-mint); }
+    100% { color: var(--color-ice700); }
+}
+.task-just-updated {
+    animation: task-updated-flash 10s ease forwards;
+}
+
 .active {
     color: var(--color-ice900);
     background-color: var(--color-citrus-lemon);

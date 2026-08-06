@@ -3,6 +3,9 @@ $from = $_GET['from'] ?? 'settings';
 $sort = $_GET['sort'] ?? 'name';
 $cardActions = 'edit';
 $sortBaseUrl = "index.php?page=edit-all-tasks&from=" . urlencode($from);
+$flashEditedTaskId = $_SESSION['flash_edited_task_id'] ?? null;
+unset($_SESSION['flash_edited_task_id']);
+
 
 $query = "
     SELECT
@@ -26,6 +29,7 @@ $stmt->execute(['household_id' => $_SESSION['household_id']]);
 $tasks = $stmt->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_task_id']) && $_SESSION['role'] === 'head') {
+    requireCsrf();
     $deleteTaskId = (int) $_POST['delete_task_id'];
 
     $stmt = $pdo->prepare("UPDATE household_tasks SET is_active = 0 WHERE id = :id AND household_id = :household_id");

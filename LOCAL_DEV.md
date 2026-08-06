@@ -2,12 +2,21 @@
 
 ## Prerequisites
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
+- Copy `.env.example` to `.env` in the project root (first-time setup only — `.env` is gitignored)
 
 ## Start the Environment
 
 ```bash
-cd "/Users/nikkibaltzer/Desktop/Projects/BRTN app"
 docker compose up -d
+```
+
+## First-Time Database Setup
+
+The database only needs this once — the `db_data` volume persists it after that.
+
+```bash
+docker compose exec -T db mysql -uroot -p"$MYSQL_ROOT_PASSWORD" cleaning_db < sql/schema.sql
+docker compose exec -T db mysql -uroot -p"$MYSQL_ROOT_PASSWORD" cleaning_db < sql/seed.sql
 ```
 
 ## Local URLs
@@ -21,6 +30,8 @@ docker compose up -d
 ## Network Access (Same WiFi)
 
 Any device on the same WiFi can access the app using your Mac's IP.
+> **Security note:** Anything on the same WiFi can reach both the website and the MySQL database directly (port 3306, root credentials) while this is running. Don't leave it up on shared/public networks.
+
 
 | Service    | URL                            |
 |------------|--------------------------------|

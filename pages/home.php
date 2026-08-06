@@ -1,4 +1,5 @@
 <?php
+$cardActions = 'status';
 // Logic specific to the Home page
 $stmt = $pdo->prepare("
     SELECT

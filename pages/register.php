@@ -9,11 +9,13 @@ $emailTaken = false;
 $passwordMismatch = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireCsrf();
     $username = $_POST['username'];
     $email =  $_POST['email'];
     $name = $_POST['name'];
     $password = $_POST['psw'];
     $passwordConfirm = $_POST['psw_confirm'];
+    $passwordMismatch = ($password !== $passwordConfirm);
     $householdName = $_POST['household-name'];
 
     $checkStmt = $pdo->prepare("SELECT username, email FROM users where username = :username OR email = :email");
@@ -84,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <form action="index.php?page=register" method="POST" class="register_form">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
     <div class="task-card">
         <div class="form-group">
             <label for="username" class="subheading">

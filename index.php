@@ -1,5 +1,10 @@
 <?php
 ob_start();
+session_set_cookie_params([
+    'httponly' => true,
+    'samesite' => 'Lax',
+    'secure' => isset($_SERVER['HTTPS']),
+]);
 session_start();
 require_once 'includes/db.php';
 require_once 'includes/auth.php';

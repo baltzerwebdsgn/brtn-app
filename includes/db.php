@@ -1,8 +1,8 @@
 <?php
-$host = 'db'; // This MUST match the service name in your docker-compose.yml
-$db   = 'cleaning_db';
-$user = 'root';
-$pass = 'rootpassword';
+$host = getenv('DB_HOST') ?: 'db';
+$db   = getenv('DB_NAME') ?: 'cleaning_db';
+$user = getenv('DB_USER') ?: 'root';
+$pass = getenv('DB_PASS') ?: '';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
