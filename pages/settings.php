@@ -334,8 +334,10 @@ $activeEditId = $editTaskId ?? ($editingTask['id'] ?? null);
                 <span class="profile-icon-sm <?= $housemate['id'] === $_SESSION['user_id'] ? 'active' : 'inactive' ?>">
                     <?= strtoupper(substr($housemate['name'] ?? $housemate['username'], 0, 1)) ?>
                 </span>
-                <h3><?= htmlspecialchars($housemate['name'] ?? $housemate['username']) ?></h3>
-                <span class="subheading role"><?= htmlspecialchars(ucfirst(strtolower(trim($housemate['role'])))) ?></span>
+                <div class="housemate-info-text">
+                    <h3 class="housemate-name"><?= htmlspecialchars($housemate['name'] ?? $housemate['username']) ?></h3>
+                    <span class="text role"><?= htmlspecialchars(ucfirst(strtolower(trim($housemate['role'])))) ?></span>
+                </div>
             </div>
             <div class="housemate-options">
                 <?php if ($_SESSION['role'] === 'head' || $housemate['id'] === $_SESSION['user_id']): ?>
@@ -441,11 +443,11 @@ $activeEditId = $editTaskId ?? ($editingTask['id'] ?? null);
                 >
             </div>
             <div class="form-group">
-                <label for="description-new-task" class="subheading addTask">Task Description(Optional)</label>
+                <label for="description-new-task" class="subheading addTask">Task Description (Optional)</label>
                 <textarea id="description-new-task" name="description-new-task" placeholder="Add any notes or steps for this task" class="addTask"><?= htmlspecialchars($editingTask['instructions'] ?? '') ?></textarea>
             </div>
             <div class="form-group">
-                <label for="time-new-task" class="subheading addTask">Completion Time(Minutes)</label>
+                <label for="time-new-task" class="subheading addTask">Completion Time (Minutes)</label>
                 <input
                     type="number"
                     id="time-new-task"
@@ -457,14 +459,16 @@ $activeEditId = $editTaskId ?? ($editingTask['id'] ?? null);
             </div>
             <div class="form-group">
                 <h2>Zone</h2>
-                <?php foreach ($zones as $zone): ?>
-                    <input type="radio" id="zone-<?= $zone['id'] ?>" name="zone_id" value="<?= $zone['id'] ?>" class="addTask" <?= ($editingZoneId == $zone['id']) ? 'checked' : '' ?>>
-                    <label for="zone-<?= $zone['id'] ?>" class="addTask chip"><?= htmlspecialchars($zone['name']) ?></label>
-                <?php endforeach; ?>
+                <div class="chip-group">
+                    <?php foreach ($zones as $zone): ?>
+                        <input type="radio" id="zone-<?= $zone['id'] ?>" name="zone_id" value="<?= $zone['id'] ?>" class="addTask" <?= ($editingZoneId == $zone['id']) ? 'checked' : '' ?>>
+                        <label for="zone-<?= $zone['id'] ?>" class="addTask chip"><?= htmlspecialchars($zone['name']) ?></label>
+                    <?php endforeach; ?>
+                </div>
             </div>
             <div class="form-group">
                 <h2>Frequency</h2>
-                <div>
+                <div class="chip-group">
                     <input type="radio" id="daily-new-task" name="frequency" value="daily" class="addTask" <?= (isset($editingTask['frequency']) && strtolower($editingTask['frequency']) === 'daily') ? 'checked' : '' ?>>
                     <label for="daily-new-task" class="addTask chip">Daily</label>
 
@@ -474,38 +478,42 @@ $activeEditId = $editTaskId ?? ($editingTask['id'] ?? null);
                     <input type="radio" id="monthly-new-task" name="frequency" value="monthly" class="addTask" <?= (isset($editingTask['frequency']) && strtolower($editingTask['frequency']) === 'monthly') ? 'checked' : '' ?>>
                     <label for="monthly-new-task" class="addTask chip">Monthly</label>
                 </div>
-                <div>
+                <div id="day-of-week-section">
                     <p class="text">Select what day(s) you want this task to happen on.</p>
-                    <?php $editingDays = isset($editingTask['day_of_week']) ? explode(',', $editingTask['day_of_week']) : []; ?>
-                    <input type="checkbox" id="sunday-new-task" name="sunday-new-task" value="sunday" class="addTask" <?= in_array('Sunday', $editingDays) ? 'checked' : '' ?>>
-                    <label for="sunday-new-task" class="addTask chip">Sunday</label>
-                    <input type="checkbox" id="monday-new-task" name="monday-new-task" value="monday" class="addTask" <?= in_array('Monday', $editingDays) ? 'checked' : '' ?>>
-                    <label for="monday-new-task" class="addTask chip">Monday</label>
-                    <input type="checkbox" id="tuesday-new-task" name="tuesday-new-task" value="tuesday" class="addTask" <?= in_array('Tuesday', $editingDays) ? 'checked' : '' ?>>
-                    <label for="tuesday-new-task" class="addTask chip">Tuesday</label>
-                    <input type="checkbox" id="wednesday-new-task" name="wednesday-new-task" value="wednesday" class="addTask" <?= in_array('Wednesday', $editingDays) ? 'checked' : '' ?>>
-                    <label for="wednesday-new-task" class="addTask chip">Wednesday</label>
-                    <input type="checkbox" id="thursday-new-task" name="thursday-new-task" value="thursday" class="addTask" <?= in_array('Thursday', $editingDays) ? 'checked' : '' ?>>
-                    <label for="thursday-new-task" class="addTask chip">Thursday</label>
-                    <input type="checkbox" id="friday-new-task" name="friday-new-task" value="friday" class="addTask" <?= in_array('Friday', $editingDays) ? 'checked' : '' ?>>
-                    <label for="friday-new-task" class="addTask chip">Friday</label>
-                    <input type="checkbox" id="saturday-new-task" name="saturday-new-task" value="saturday" class="addTask" <?= in_array('Saturday', $editingDays) ? 'checked' : '' ?>>
-                    <label for="saturday-new-task" class="addTask chip">Saturday</label>
+                    <div class="chip-group">
+                        <?php $editingDays = isset($editingTask['day_of_week']) ? explode(',', $editingTask['day_of_week']) : []; ?>
+                        <input type="checkbox" id="sunday-new-task" name="sunday-new-task" value="sunday" class="addTask" <?= in_array('Sunday', $editingDays) ? 'checked' : '' ?>>
+                        <label for="sunday-new-task" class="addTask chip">Sunday</label>
+                        <input type="checkbox" id="monday-new-task" name="monday-new-task" value="monday" class="addTask" <?= in_array('Monday', $editingDays) ? 'checked' : '' ?>>
+                        <label for="monday-new-task" class="addTask chip">Monday</label>
+                        <input type="checkbox" id="tuesday-new-task" name="tuesday-new-task" value="tuesday" class="addTask" <?= in_array('Tuesday', $editingDays) ? 'checked' : '' ?>>
+                        <label for="tuesday-new-task" class="addTask chip">Tuesday</label>
+                        <input type="checkbox" id="wednesday-new-task" name="wednesday-new-task" value="wednesday" class="addTask" <?= in_array('Wednesday', $editingDays) ? 'checked' : '' ?>>
+                        <label for="wednesday-new-task" class="addTask chip">Wednesday</label>
+                        <input type="checkbox" id="thursday-new-task" name="thursday-new-task" value="thursday" class="addTask" <?= in_array('Thursday', $editingDays) ? 'checked' : '' ?>>
+                        <label for="thursday-new-task" class="addTask chip">Thursday</label>
+                        <input type="checkbox" id="friday-new-task" name="friday-new-task" value="friday" class="addTask" <?= in_array('Friday', $editingDays) ? 'checked' : '' ?>>
+                        <label for="friday-new-task" class="addTask chip">Friday</label>
+                        <input type="checkbox" id="saturday-new-task" name="saturday-new-task" value="saturday" class="addTask" <?= in_array('Saturday', $editingDays) ? 'checked' : '' ?>>
+                        <label for="saturday-new-task" class="addTask chip">Saturday</label>
+                    </div>
                 </div>
-                <div>
+                <div id="week-of-month-section">
                     <p class="text">Select what week of the month you want this task to happen on.</p>
-                    <?php $editingWeek = isset($editingTask['week_of_month']) ? formatWeekOfMonth($editingTask['week_of_month']) : null; ?>
-                    <input type="radio" id="1st-week-new-task" name="monthly" value="1st" class="addTask" <?= ($editingWeek === '1st') ? 'checked' : '' ?>>
-                    <label for="1st-week-new-task" class="addTask chip">1st</label>
+                    <div class="chip-group">
+                        <?php $editingWeek = isset($editingTask['week_of_month']) ? formatWeekOfMonth($editingTask['week_of_month']) : null; ?>
+                        <input type="radio" id="1st-week-new-task" name="monthly" value="1st" class="addTask" <?= ($editingWeek === '1st') ? 'checked' : '' ?>>
+                        <label for="1st-week-new-task" class="addTask chip">1st</label>
 
-                    <input type="radio" id="2nd-week-new-task" name="monthly" value="2nd" class="addTask" <?= ($editingWeek === '2nd') ? 'checked' : '' ?>>
-                    <label for="2nd-week-new-task" class="addTask chip">2nd</label>
+                        <input type="radio" id="2nd-week-new-task" name="monthly" value="2nd" class="addTask" <?= ($editingWeek === '2nd') ? 'checked' : '' ?>>
+                        <label for="2nd-week-new-task" class="addTask chip">2nd</label>
 
-                    <input type="radio" id="3rd-week-new-task" name="monthly" value="3rd" class="addTask" <?= ($editingWeek === '3rd') ? 'checked' : '' ?>>
-                    <label for="3rd-week-new-task" class="addTask chip">3rd</label>
+                        <input type="radio" id="3rd-week-new-task" name="monthly" value="3rd" class="addTask" <?= ($editingWeek === '3rd') ? 'checked' : '' ?>>
+                        <label for="3rd-week-new-task" class="addTask chip">3rd</label>
 
-                    <input type="radio" id="4th-week-new-task" name="monthly" value="4th" class="addTask" <?= ($editingWeek === '4th') ? 'checked' : '' ?>>
-                    <label for="4th-week-new-task" class="addTask chip">4th</label>
+                        <input type="radio" id="4th-week-new-task" name="monthly" value="4th" class="addTask" <?= ($editingWeek === '4th') ? 'checked' : '' ?>>
+                        <label for="4th-week-new-task" class="addTask chip">4th</label>
+                    </div>
                 </div>
             </div>
             <div class="form-group">

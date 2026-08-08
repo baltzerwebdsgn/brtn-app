@@ -35,8 +35,8 @@ Any device on the same WiFi can access the app using your Mac's IP.
 
 | Service    | URL                            |
 |------------|--------------------------------|
-| Website    | http://10.0.0.11:8080          |
-| phpMyAdmin | http://10.0.0.11:8081          |
+| Website    | http://10.0.0.15:8080          |
+| phpMyAdmin | http://10.0.0.15:8081          |
 
 > **Note:** This IP can change if your router reassigns it. To make it permanent, set a static IP in **System Settings → Network → Wi-Fi → Details → TCP/IP**:
 > - Configure IPv4: **Manually**

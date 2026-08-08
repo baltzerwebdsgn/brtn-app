@@ -64,7 +64,7 @@ $zones = $zoneStmt->fetchAll();
 <div class="filter-section">
     <details class="filter-dropdown" open>
         <summary class="filter-summary">
-            Zone
+            Zones
             <span class="material-symbols-outlined chevron">keyboard_arrow_up</span>
         </summary>
         <div class="filter-group">

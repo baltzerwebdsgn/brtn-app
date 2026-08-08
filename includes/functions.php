@@ -19,15 +19,25 @@ function formatFrequencyDetail($frequency, $dayOfWeek, $weekOfMonth) {
     if ($label === 'Weekly' && $dayOfWeek) {
         $days = explode(',', $dayOfWeek);
         $abbreviations = array_map('abbreviateDay', $days);
-        return $label . '(' . implode('/', $abbreviations) . ')';
+        return $label . ' · (' . implode('/', $abbreviations) . ')';
     }
 
     if ($label === 'Monthly' && $weekOfMonth) {
-        return $label . '(' . formatWeekOfMonth($weekOfMonth) . ')';
+        return $label . ' · (' . formatWeekOfMonth($weekOfMonth) . ')';
     }
 
     return $label;
 }
+function formatFrequencyDetailHtml($frequency, $dayOfWeek, $weekOfMonth) {
+    $detail = formatFrequencyDetail($frequency, $dayOfWeek, $weekOfMonth);
+
+    if (preg_match('/^([^(]*)(\(.*\))$/', $detail, $matches)) {
+        return htmlspecialchars($matches[1]) . '<em>' . htmlspecialchars($matches[2]) . '</em>';
+    }
+
+    return htmlspecialchars($detail);
+}
+
 //Helper function for displaying the desired sorting logic
 function applySortOrder($query, $sort) {
     switch ($sort) {

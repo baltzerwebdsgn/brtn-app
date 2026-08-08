@@ -11,7 +11,7 @@
             <a href="<?= $sortBaseUrl ?>&sort=name" class="chip <?= $sort == 'name' ? 'chip-active' : '' ?>">Name</a>
             <a href="<?= $sortBaseUrl ?>&sort=time" class="chip <?= $sort == 'time' ? 'chip-active' : '' ?>">Time</a>
             <a href="<?= $sortBaseUrl ?>&sort=frequency" class="chip <?= $sort == 'frequency' ? 'chip-active' : '' ?>">Frequency</a>
-            <a href="<?= $sortBaseUrl ?>&sort=zone" class="chip <?= $sort == 'zone' ? 'chip-active' : '' ?>">Zone</a>
+            <a href="<?= $sortBaseUrl ?>&sort=zone" class="chip <?= $sort == 'zone' ? 'chip-active' : '' ?>">Zones</a>
         </div>
     </details>
 </div>

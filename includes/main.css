@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
 
 :root {
     --color-white: #FFF;
@@ -24,6 +25,13 @@
     --text-secondary: #6B7396;
     --font-display:'Fredoka',ui-rounded,'SF Pro Rounded',sans-serif;
     --font-body:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+    --icon-btn: 24px;
+    --font-heading-size: 28px;
+    --font-section-size: 16px;
+    --font-subsection-size: 14px;
+    --font-text-size: 12px;
+    --font-small-size: 10px;
+
 }
 body { 
     font-family: var(--font-body);
@@ -34,15 +42,17 @@ h2 {
     text-transform: uppercase;
     font-family: (var(--font-body));
     color: var(--color-ice500);
-    font-size:  1em;
+    font-size:  var(--font-section-size);
 }
 h1 { 
     font-family: var(--font-display);
     color: var(--color-ice900);
+    font-size: var(--font-heading-size);
 }
 h3 {
-   font-family: var(--font-body);
+    font-family: var(--font-body);
     color: var(--color-ice700); 
+    font-size: var(--font-subsection-size);
 }
 #tagline {
     color:var(--text-secondary);
@@ -55,19 +65,53 @@ h3 {
     border-radius: 12px; 
     box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
 }
-.task-info {
-    display: flex;
-    align-items: center;
-    color: var(--color-ice700);
-    gap: 8px;
-}
-.task-meta {
-    color: var(--color-ice500);
-}
-.task-content {
+.task-title {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 2px;
+    color: var(--color-ice700);
+    font-size: var(--font-subsection-size);
+}
+a.info-icon {
+    display: flex;
+    align-items: center;
+}
+.task-title .info-icon {
+    cursor: pointer;
+    color: var(--color-citrus-orange);
+    font-size: var(--icon-btn);
+}
+.task-content {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    column-gap: 8px;
+    row-gap: 2px;
+}
+.task-title {
+    grid-column: 1 / -1;
+}
+.task-meta-zone {
+    grid-column: 1;
+    grid-row: 2;
+    color: var(--color-ice500);
+    font-size: var(--font-text-size);
+}
+.task-meta-frequency {
+    grid-column: 1;
+    grid-row: 3;
+    color: var(--color-ice500);
+    font-size: var(--font-text-size);
+}
+.task-action-primary {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+    align-self: center;
+}
+.task-action-secondary {
+    grid-column: 3;
+    grid-row: 2 / span 2;
+    align-self: center;
 }
 .task-status-btn {
     background: none;
@@ -76,13 +120,8 @@ h3 {
     cursor: pointer;
 }
 .task-status-btn .material-symbols-outlined {
-    font-size: 49px;
+    font-size: var(--icon-btn);
     color: var(--color-ice300);
-}
-.task-edit {
-    display: flex;
-    align-items: center;
-    gap: 8px;
 }
 .edit-task-btn, .remove-task-btn {
     border: none;
@@ -92,7 +131,10 @@ h3 {
 }
 .edit-task-btn .material-symbols-outlined,
 .remove-task-btn .material-symbols-outlined {
-    font-size: 49px;
+    font-size: var(--icon-btn);
+}
+button.remove-task-btn {
+    padding: 0;
 }
 .edit-task-btn {
     text-decoration: none;
@@ -104,7 +146,6 @@ h3 {
 .task-just-updated {
     animation: task-updated-flash 10s ease forwards;
 }
-
 .active {
     color: var(--color-ice900);
     background-color: var(--color-citrus-lemon);
@@ -141,6 +182,7 @@ input.reg.input-error {
     display: block;
     font-weight: 600;
     font-family: var(--font-body);
+    font-size: var(--font-subsection-size);
     margin-bottom: 8px;
 }
 
@@ -150,7 +192,7 @@ input.reg, input.login, input.settings, input.addRoommate, input.addTask, textar
     border: 1px solid var(--color-ice100);
     border-radius: 8px;
     box-sizing: border-box;
-    font-size: 1rem;
+    font-size: var(--font-text-size);
     font-family: var(--font-body);
     color: var(--color-ice700);
 }
@@ -181,7 +223,14 @@ input.reg:focus, input.login:focus, input.settings:focus, input.addRoommate:focu
     justify-content: center;
     gap: 8px;
 }
+.inline-icon-form {
+    display: flex;
+    align-items: center;
+}
 .btn-icon {
+    display: flex;
+    align-items: center;
+    line-height: 1;
     color: var(--color-ice700);
     padding: 0;
 }
@@ -189,6 +238,7 @@ input.reg:focus, input.login:focus, input.settings:focus, input.addRoommate:focu
     border: none;
     color: var(--color-citrus-grapefruit);
     background-color: var(--color-white);
+    font-size: var(--icon-btn);
 }
 .brand-wordmark{
     position:relative;
@@ -261,6 +311,7 @@ input.reg:focus, input.login:focus, input.settings:focus, input.addRoommate:focu
 span.account-icon, span.info-icon, span.housemate-icon {
     color: var(--color-ice500);
     cursor: pointer;
+    font-size: var(--icon-btn);
 }
 /* The switch - the box around the slider */
 .switch {
@@ -385,7 +436,7 @@ input:checked + .slider:before {
 .text {
     font-family: var(--font-body);
     font-weight: 100;
-    font-size: 0.75em;
+    font-size: var(--font-text-size);
     color: var(--color-ice500)
 }
 .home-title {
@@ -405,8 +456,8 @@ input:checked + .slider:before {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     color: var(--color-ice900);
 }
@@ -423,13 +474,21 @@ input:checked + .slider:before {
 .home-title-text h2 {
     margin: 0;
 }
+input.addTask[type="radio"],
+input.addTask[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
 .chip {
     background-color: var(--color-ice100);
     color: var(--color-ice900);
-    border-radius: 30px;
+    border-radius: 15px;
     text-decoration: none;
     font-weight: 700; 
-    padding: 10px 20px;
+    padding: 5px 10px;
+    font-size: var(--font-text-size);
 }
 .chip-active, input.addTask:checked + label.addTask.chip {
     background-color: var(--color-ice900);
@@ -437,12 +496,18 @@ input:checked + .slider:before {
 }
 button.chip {
     border: none;
-    font-size: 1em;
+    font-size: var(--font-text-size);
 }
 label.addTask.chip {
     display: inline-flex;
-    margin: 0 6px 6px 0;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
+}
+.chip-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
 }
 .hide-done-btn {
     display: flex;
@@ -458,7 +523,7 @@ label.addTask.chip {
     justify-content: space-between;
     font-weight: 700;
     text-transform: uppercase;
-    font-size: 0.85rem;
+    font-size: var(--font-subsection-size);
     color: var(--color-ice900);
     list-style: none;
 }
@@ -468,6 +533,7 @@ label.addTask.chip {
 }
 .filter-group {
     display: flex;
+    flex-wrap: wrap;
     gap: clamp(4px, 1.5vw, 8px);
     margin-top: 10px;
     margin-bottom: 10px;
@@ -496,7 +562,6 @@ details:not([open]) .chevron {
     background-color: var(--color-white);
     color: var(--color-ice900);
     font-weight: 600;
-    font-size: 1rem;
     cursor: pointer;
 }
 .housemate-content {
@@ -510,11 +575,18 @@ details:not([open]) .chevron {
     justify-content: flex-start;
     gap: 8px;
 }
+.housemate-info-text {
+    display: flex;
+    flex-direction: column;
+}
 .housemate-options {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 8px;
+}
+.housemate-name {
+    margin: 0;
 }
 .role {
     margin-bottom: 0;
@@ -536,4 +608,94 @@ details:not([open]) .chevron {
 input.date {
     font-family: var(--font-body);
     width: 100%;
+}
+
+
+.bottom-nav {
+  position: fixed;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  display: flex;
+
+  /* Exact Dimensions & Radius */
+  width: 350px;
+  height: 75px;
+  border-radius: 25px; /* Adjusted to match the pill-shape in the image */
+  
+  /* The Fill: Using a subtle gradient to mimic light hitting a surface */
+  background: linear-gradient(135deg, 
+    rgba(240, 243, 250, 0.9) 0%, 
+    rgba(224, 230, 242, 0.7) 100%);
+
+  /* The "Frost": High blur to match the milky look */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  /* The Border: Using a very thin, semi-transparent white */
+  border: 1px solid rgba(255, 255, 255, 0.6);
+
+  /* The Multi-Layer Shadow
+      Inset White: High-intensity light at -45 deg.
+      Inset Dark: Subtle depth on the opposite side.
+      Outer Dark: The 20px depth / 50px dispersion shadow.
+  */
+  box-shadow: 
+    inset 2px 2px 4px rgba(255, 255, 255, 1),    /* Sharp top-left light highlight */
+    inset -2px -2px 6px rgba(0, 0, 0, 0.05),     /* Subtle bottom-right inner depth */
+    0 15px 35px rgba(0, 0, 0, 0.15),             /* Soft outer drop shadow */
+    0 5px 10px rgba(0, 0, 0, 0.05);              /* Closer, tighter shadow for grounding */
+
+  /* Centering items inside */
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 10px;
+}
+a.nav-link {
+  height: 34px;
+  width: 34px;
+  border-radius: 34px;
+  border: none;
+  background: #CFD6E333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+  text-decoration: none;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 48;
+}
+a.active {
+  background: var(--color-citrus-lemon);
+  color: var(--color-ice500);
+  padding: 0%;
+}
+button#addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  width: 34px;
+  border-radius: 34px;
+  border: 2px solid var(--color-ice900);
+  background: #FFFFFF;
+  padding: 0;
+}
+#addButton .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 700, 'GRAD' 0, 'opsz' 48;
+    font-size: var(--icon-btn);
+    color: #323A59;
+}
+
+.navbar-icon {
+  color: #323A59;
+  font-size: var(--icon-btn);
 }

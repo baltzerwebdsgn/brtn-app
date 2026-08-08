@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BRIGHT'N</title>
     <link rel="stylesheet" href="includes/main.css">
-    <link rel="stylesheet" href="includes/navBar.css">
 </head>
 <body>
 <?php if (in_array($page, ['login','register', 'forgot-password'])): ?>
