@@ -5,6 +5,13 @@ document.querySelectorAll('.input-error').forEach(function (field){
         field.classList.remove('input-error');
     });
 });
+// ---- Completed all tasks for the day state ----
+function updateTodoEmptyState() {
+    var todoSection = document.getElementById('todo-tasks-list');
+    var emptyState = document.getElementById('todo-empty-state');
+    if (!todoSection || !emptyState) return;
+    emptyState.style.display = todoSection.children.length === 0 ? 'block' : 'none';
+}
 
 // ---- Color-code upcoming tasks by due date ----
 // Change the text color in the upcoming page to fit the due date condition
@@ -215,7 +222,7 @@ document.querySelectorAll('.task-status-btn').forEach(function (btn) {
                     var todoSectionSameDay = document.getElementById('todo-tasks-list');
                     if (todoSectionSameDay) todoSectionSameDay.appendChild(card);
                 }
-
+                updateTodoEmptyState();
             });
     });
 });

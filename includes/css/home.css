@@ -60,3 +60,19 @@ input.addTask:checked + label.profile-icon-sm {
 label.addTask.profile-icon-sm.avatar-previous {
     background-color: var(--color-citrus-orangeLight);
 }
+.empty-state {
+    text-align: center;
+}
+.empty-state-icon {
+    font-size: 30px;
+    color: var(--color-citrus-lemon);
+}
+.empty-state h3 {
+    margin: 0 0 var(--space-xs);
+}
+.empty-state p {
+    color: var(--color-ice500);
+    margin: 0;
+    font-size: var(--font-text-size);
+}
+

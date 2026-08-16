@@ -63,14 +63,14 @@ foreach ($candidateTasks as $task) {
 
 <h2>To Do</h2>
 <div id="todo-tasks-list">
-    <?php if (empty($dueTasks)): ?>
-        <h3>All done for today!</h3>
-        <p>Nice work - check back in tomorrow for your next tasks.</p>
-    <?php else: ?>
-        <?php foreach ($dueTasks as $task): ?>
-            <?php include 'includes/task-card.php'; ?>
-        <?php endforeach; ?>
-    <?php endif; ?>
+    <?php foreach ($dueTasks as $task): ?>
+        <?php include 'includes/task-card.php'; ?>
+    <?php endforeach; ?>
+</div>
+<div id="todo-empty-state" class="task-card empty-state" style="<?= empty($dueTasks) ? '' : 'display:none;' ?>">
+    <span class="material-symbols-outlined empty-state-icon">celebration</span>
+    <h3>All done for today!</h3>
+    <p>Nice work — check back in tomorrow for your next tasks.</p>
 </div>
 <!-- Displays the Users Previous 30 Day Consistency Score -->
 <!-- <h2> Cleaning Score </h2>
