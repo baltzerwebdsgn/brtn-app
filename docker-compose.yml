@@ -5,6 +5,8 @@ services:
     container_name: cleaning_web
     env_file:
       - .env
+    environment:
+      TZ: America/Los_Angeles
     volumes:
       - ./:/var/www/html
     ports:
@@ -23,6 +25,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: cleaning_db
+      TZ: America/Los_Angeles
     volumes:
       - db_data:/var/lib/mysql
     # We map port 3306 so you can connect to it from VS Code

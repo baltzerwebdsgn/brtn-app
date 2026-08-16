@@ -1,3 +1,4 @@
+// ---- Clear error state on input ----
 // Removed the input's error border upon changing field info
 document.querySelectorAll('.input-error').forEach(function (field){
     field.addEventListener('input', function () {
@@ -5,6 +6,33 @@ document.querySelectorAll('.input-error').forEach(function (field){
     });
 });
 
+// ---- Color-code upcoming tasks by due date ----
+// Change the text color in the upcoming page to fit the due date condition
+document.querySelectorAll('.task-meta-last[data-next-date]').forEach(function (el) {
+    var nextDate = el.dataset.nextDate;
+    if (!nextDate) return;
+
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    var next = new Date(nextDate + 'T00:00:00');
+
+    el.classList.add(next >= today ? 'on-track' : 'overdue');
+});
+// Scrolls to the Add a task modal if user clicks to edit a task
+var params = new URLSearchParams(window.location.search);
+if (params.has('edit_task') || params.get('open') === 'add-task') {
+    var target = document.getElementById('add-a-task');
+    if (target) target.scrollIntoView();
+}
+
+// Cancel action
+document.querySelectorAll('.btn-close[data-close-target]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        document.querySelector(this.dataset.closeTarget).classList.add('hidden');
+    });
+});
+
+// ---- Toggle frequency-specific form fields (day-of-week / week-of-month) ----
 // Displays corresponding section based off the frequency chosen
 var daySection = document.getElementById('day-of-week-section');
 var weekSection = document.getElementById('week-of-month-section');
@@ -24,3 +52,149 @@ if (daySection && weekSection) {
 
     updateFrequencyVisibility();
 }
+
+// ---- Reassign a task to a different housemate ----
+// Task rows are reassigned via a hidden radio per housemate (one per avatar),
+// rather than drag-and-drop, so this just reacts to the radio changing.
+document.querySelectorAll('input[name^="assignment["]').forEach(function (radio) {
+    radio.addEventListener('change', function () {
+        if (!this.checked) return;
+
+        var taskRow = this.closest('.assign-border');
+        var frequency = taskRow.dataset.frequency;
+        var newHousemateId = this.value;
+
+        var oldList = taskRow.closest('.assign-list');
+        var oldHousemateId = oldList.id.replace('housemate-list-', '');
+        var newList = document.getElementById('housemate-list-' + newHousemateId);
+
+        if (oldList === newList) return;
+
+        newList.appendChild(taskRow);
+        adjustCount(oldHousemateId, frequency, -1);
+        adjustCount(newHousemateId, frequency, 1);
+        updatePreviouslyNote(taskRow, newHousemateId);
+        updatePreviousAvatar(taskRow, newHousemateId);
+    });
+});
+
+// Highlights the original assignee's avatar only when the task has been moved away
+// from them — cleared entirely once it's moved back.
+function updatePreviousAvatar(taskRow, newHousemateId) {
+    var originalId = taskRow.dataset.originalAssigneeId;
+
+    taskRow.querySelectorAll('.assign-avatars label').forEach(function (label) {
+        label.classList.remove('avatar-previous');
+    });
+
+    if (newHousemateId !== originalId) {
+        var radios = taskRow.querySelectorAll('.assign-avatars input[type="radio"]');
+        radios.forEach(function (radio) {
+            if (radio.value === originalId) {
+                var label = taskRow.querySelector('label[for="' + radio.id + '"]');
+                if (label) label.classList.add('avatar-previous');
+            }
+        });
+    }
+}
+
+// Keeps each housemate's task-count header in sync as tasks move between them.
+function adjustCount(housemateId, frequency, delta) {
+    var header = document.getElementById('housemate-header-' + housemateId);
+    if (!header) return;
+
+    var totalEl = header.querySelector('.total-count');
+    totalEl.textContent = parseInt(totalEl.textContent, 10) + delta;
+
+    var freqEl = header.querySelector('.' + frequency + '-count');
+    if (freqEl) {
+        freqEl.textContent = parseInt(freqEl.textContent, 10) + delta;
+    }
+}
+
+function updatePreviouslyNote(taskRow, newHousemateId) {
+    var previousEl = taskRow.querySelector('.assign-previous');
+    var originalId = taskRow.dataset.originalAssigneeId;
+    var originalName = taskRow.dataset.originalAssigneeName;
+
+    if (newHousemateId === originalId) {
+        previousEl.style.display = 'none';
+        previousEl.textContent = '';
+    } else {
+        previousEl.textContent = 'Previously: ' + originalName;
+        previousEl.style.display = 'block';
+    }
+}
+
+// ---- Mark a task done/undone (optimistic UI + server sync) ----
+document.querySelectorAll('.task-status-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        var taskId = this.dataset.taskId;
+        var isDone = this.classList.contains('is-done');
+        var action = isDone ? 'undo' : 'complete';
+        var csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+        var formData = new FormData();
+        formData.append('task_id', taskId);
+        formData.append('task_action', action);
+        formData.append('csrf_token', csrfToken);
+
+        fetch('actions/task-completion.php', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+                if (!data.success) return;
+
+                var card = btn.closest('.task-card');
+                var statusInfo = card.querySelector('.task-status-info');
+                var icon = btn.querySelector('.material-symbols-outlined');
+                var completedByNote = card.querySelector('.completed-by-note');
+                var assignedTo = card.dataset.assignedTo;
+                
+                if (completedByNote) {
+                    if (data.status === 'done' && data.completed_by_id && String(data.completed_by_id) !== assignedTo) {
+                        completedByNote.textContent = 'Completed by ' + data.completed_by_name;
+                        completedByNote.style.display = 'block';
+                    } else {
+                        completedByNote.textContent = '';
+                        completedByNote.style.display = 'none';
+                    }
+                }
+
+                statusInfo.classList.remove('due', 'overdue', 'soon', 'done');
+                statusInfo.classList.add(data.status);
+                statusInfo.textContent = data.status.charAt(0).toUpperCase() + data.status.slice(1);
+
+                if (data.status === 'done') {
+                    btn.classList.add('is-done');
+                    btn.classList.remove('soon');
+                    btn.disabled = false;
+                    icon.textContent = 'undo';
+
+                    var completedSection = document.getElementById('completed-tasks-list');
+                    if (completedSection) completedSection.appendChild(card);
+                } else if (data.status === 'soon') {
+                    // "soon" = task was just completed but its next occurrence isn't
+                    // due yet — button is disabled until then.
+                    btn.classList.remove('is-done');
+                    btn.classList.add('soon');
+                    btn.disabled = true;
+                    btn.removeAttribute('data-task-id');
+                    icon.textContent = '';
+
+                    var todoSectionSoon = document.getElementById('todo-tasks-list');
+                    if (todoSectionSoon) todoSectionSoon.appendChild(card);
+                } else {
+                    btn.classList.remove('is-done', 'soon');
+                    btn.disabled = false;
+                    icon.textContent = 'check_small';
+
+                    var todoSectionSameDay = document.getElementById('todo-tasks-list');
+                    if (todoSectionSameDay) todoSectionSameDay.appendChild(card);
+                }
+
+            });
+    });
+});

@@ -48,15 +48,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
             $householdId = $pdo->lastInsertId();
 
-            $libraryTasks = $pdo->query("SELECT id FROM task_library")->fetchAll();
+            // Add the user info to the user table and connect them to the household
+            $stmt = $pdo->prepare("INSERT INTO users(username, email, name, password_hash, role, household_id) VALUES (:username, :email, :name, :password_hash, 'head', :household_id)");
+            $stmt->execute([
+                'username' => $username,
+                'email' => $email,
+                'name' => $name,
+                'password_hash' => $passwordHash,
+                'household_id' => $householdId,
+            ]);
+            $userId = $pdo->lastInsertId();
 
-            $seedStmt = $pdo->prepare("INSERT INTO household_tasks(household_id, library_task_id, is_active) VALUES (:household_id, :library_task_id, 1)");
+            // Insert the default tasks with household, assigned to the head by default
+            $libraryTasks = $pdo->query("SELECT id, frequency, day_of_week, week_of_month FROM task_library")->fetchAll();
+
+            $seedStmt = $pdo->prepare("INSERT INTO household_tasks(household_id, library_task_id, assigned_to, is_active) VALUES (:household_id, :library_task_id, :assigned_to, 1)");
             foreach ($libraryTasks as $libraryTask) {
                 $seedStmt->execute([
                     'household_id' => $householdId,
                     'library_task_id' => $libraryTask['id'],
+                    'assigned_to' => $userId,
                 ]);
+                $newTaskId = $pdo->lastInsertId();
+                createTaskDayStatusRows($pdo, $newTaskId, $libraryTask['frequency'], $libraryTask['day_of_week'], $libraryTask['week_of_month']);
             }
+
+
             // Insert default zones list with the household
             $defaultRooms = $pdo->query("SELECT DISTINCT room FROM task_library")->fetchAll();
 
@@ -67,17 +84,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'name' => $room['room'],
                 ]);
             }
-            // Add the user info to the user table and connect them to the household
-            $stmt = $pdo->prepare("INSERT INTO users(username, email, name, password_hash, role, household_id) VALUES (:username, :email, :name, :password_hash, 'head', :household_id)");
-            $stmt->execute([
-                'username' => $username,
-                'email' => $email,
-                'name' => $name,
-                'password_hash' => $passwordHash,
-                'household_id' => $householdId,
-            ]);
+
             header('Location: index.php?page=login');
             exit;
+
         } catch (PDOException $e) {
             $error = 'That username or email is already taken.';
         }

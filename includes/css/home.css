@@ -1,0 +1,62 @@
+.home-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.home-title-text {
+    display: flex;
+    flex-direction: column;
+    justify-self: flex-start;
+    gap: 0;
+}
+.profile-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-circle);
+    color: var(--color-ice900);
+}
+.profile-icon-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 10px;
+    height: 10px;
+    border-radius: var(--radius-circle);
+    color: var(--color-ice900);
+}
+.home-title-text h1,
+.home-title-text h2 {
+    margin: 0;
+}
+.navSpace {
+    height: 80px;
+}
+.vac-info {
+    font-family: var(--font-body);
+    color: var(--color-ice500);
+    margin-top: 0;
+}
+.vac-iTasks {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--space-sm);
+}
+label.addTask.profile-icon-sm {
+    background-color: var(--color-ice300);
+    color: var(--color-ice500);
+    padding: 7px;
+    cursor: pointer;
+}
+input.addTask:checked + label.profile-icon-sm {
+    background-color: var(--color-citrus-lemon);
+    color: var(--color-ice900);
+}
+label.addTask.profile-icon-sm.avatar-previous {
+    background-color: var(--color-citrus-orangeLight);
+}

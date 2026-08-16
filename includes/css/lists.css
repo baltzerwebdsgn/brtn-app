@@ -1,0 +1,100 @@
+.account-border:not(:first-child), .assign-border:not(:first-child) {
+    border-top: solid 2px var(--color-ice100);
+}
+
+.account-menu, .assign-list {
+    padding: 0;
+}
+.assign-list {
+    margin-top: 8px;
+}
+.account-menu-row, .assign-list-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  padding: 20px 20px;
+  cursor: pointer;
+}
+.account-title {
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--space-sm);
+}
+.account-text {
+    color: var(--color-ice900);
+    margin: 0;
+}
+span.account-icon, span.info-icon, span.housemate-icon {
+    color: var(--color-ice500);
+    cursor: pointer;
+    font-size: var(--icon-btn);
+}
+.assign-list-row-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+.assign-avatars {
+    display: flex;
+    gap: 6px;
+}
+.assign-previous {
+    color: var(--color-citrus-orange);
+    font-size: 0.8rem;
+}
+.assign-summary {
+    float: right;
+    color: var(--color-ice500);
+    font-size: 0.85rem;
+    font-weight: 400;
+    text-transform: none;
+    font-family: var(--font-display);
+}
+.assign-description {
+    margin-top: 0;
+}
+.setting-subpage-title {
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--space-sm);
+}
+.setting-subpage-title a {
+    text-decoration: none;
+    color: var(--color-ice900);
+}
+.setting-subpage-title h1 {
+    font-weight: 600;
+}
+.housemate-content {
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.housemate-info {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--space-sm);
+}
+.housemate-info-text {
+    display: flex;
+    flex-direction: column;
+}
+.housemate-options {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+}
+.housemate-name-card {
+    margin: 0;
+}
+.role {
+    margin-bottom: 0;
+}

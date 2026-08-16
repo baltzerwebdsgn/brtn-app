@@ -1,5 +1,7 @@
-<?php 
-// Helper functions for displaying the cards with abreviations
+<?php
+
+// ---- Display formatting (labels, abbreviations, relative dates) ----
+
 function abbreviateDay($day) {
     $map = ['Sunday' => 'Su', 'Monday' => 'Mo', 'Tuesday' => 'Tu', 'Wednesday' => 'We', 'Thursday' => 'Th', 'Friday' => 'Fr', 'Saturday' => 'Sa'];
     return $map[$day] ?? substr($day, 0, 2);
@@ -38,7 +40,30 @@ function formatFrequencyDetailHtml($frequency, $dayOfWeek, $weekOfMonth) {
     return htmlspecialchars($detail);
 }
 
-//Helper function for displaying the desired sorting logic
+function formatRelativeDate($datetime) {
+    if (empty($datetime)) {
+        return 'Not Yet';
+    }
+
+    $date = new DateTime((new DateTime($datetime))->format('Y-m-d'));
+    $today = new DateTime('today');
+    $diffDays = (int) $today->diff($date)->format('%r%a');
+
+    if ($diffDays === 0) {
+        return 'Today';
+    }
+    if ($diffDays === -1) {
+        return 'Yesterday';
+    }
+    if ($diffDays < 0) {
+        return abs($diffDays) . ' Days Ago';
+    }
+
+    return $date->format('m-d-Y');
+}
+
+// ---- Sorting & filtering (query building) ----
+
 function applySortOrder($query, $sort) {
     switch ($sort) {
         case 'time':
@@ -63,11 +88,196 @@ function applySortOrder($query, $sort) {
                     name ASC,
                     room ASC
             ";
-        // case 'due_date': not implemented yet — no due-date calculation exists 
-        // Revisit once recurring due dates are actually computed.
+        // 'date' isn't handled here — next_due_date lives in task_day_status, not
+        // this query, so date sorting happens in PHP after the per-task status
+        // loop runs (see breakdown.php/upcoming.php). Falls through to default.
+
         case 'name':
         default:
             return $query . " ORDER BY name ASC, room ASC";
     }
 }
-?>
+
+// Builds a page URL that carries the current filter/room/sort/assignee state forward,
+// with individual values overridable — used so links (e.g. "clear filter") only change
+// the one param they mean to, instead of resetting the whole query string.
+function taskFilterLink($page, $current, $overrides = []) {
+    $params = array_merge($current, $overrides);
+    $query = ['page' => $page];
+
+    if (!empty($params['from'])) {
+        $query['from'] = $params['from'];
+    }
+    $query['filter'] = $params['filter'] ?? 'All';
+    $query['room'] = $params['room'] ?? 'All';
+    $query['sort'] = $params['sort'] ?? 'name';
+    if (isset($params['assignee'])) {
+        $query['assignee'] = $params['assignee'];
+    }
+    if (!empty($params['hideDone'])) {
+        $query['hide_done'] = 1;
+    }
+
+    return 'index.php?' . http_build_query($query);
+}
+
+// ---- Due-date scheduling ----
+
+function computeNextDueDate($frequency, $dayOfWeek, $weekOfMonth, $fromDate) {
+    $from = new DateTime($fromDate);
+    $frequency = strtolower($frequency);
+
+    if ($frequency === 'daily') {
+        $from->modify('+1 day');
+        return $from->format('Y-m-d');
+    }
+
+    if ($frequency === 'weekly') {
+        $next = clone $from;
+        $next->modify('next ' . strtolower($dayOfWeek));
+        return $next->format('Y-m-d');
+    }
+
+    if ($frequency === 'monthly') {
+        $week = (int) $weekOfMonth;
+        $year = (int) $from->format('Y');
+        $month = (int) $from->format('n');
+
+        // Finds the Nth 7-day window of the month, where the first window starts on
+        // the month's first Sunday. If that window has already passed $from, rolls
+        // forward to the same week-of-month in the following month.
+        while (true) {
+            $firstOfMonth = new DateTime(sprintf('%04d-%02d-01', $year, $month));
+            $dow = (int) $firstOfMonth->format('w'); // 0 = Sunday
+            $daysToFirstSunday = ($dow === 0) ? 0 : (7 - $dow);
+            $windowStart = (clone $firstOfMonth)
+                ->modify("+{$daysToFirstSunday} days")
+                ->modify('+' . (($week - 1) * 7) . ' days');
+
+            if ($windowStart > $from) {
+                return $windowStart->format('Y-m-d');
+            }
+
+            $month++;
+            if ($month > 12) { $month = 1; $year++; }
+        }
+    }
+
+    return null;
+}
+
+function createTaskDayStatusRows($pdo, $taskId, $frequency, $dayOfWeek, $weekOfMonth) {
+    $frequency = strtolower($frequency);
+    $days = ($frequency === 'weekly' && $dayOfWeek) ? explode(',', $dayOfWeek) : [null];
+
+    $insert = $pdo->prepare("INSERT INTO task_day_status (task_id, day_of_week, last_completed, next_due_date) VALUES (:task_id, :day_of_week, NULL, :next_due_date)");
+    $today = date('Y-m-d');
+
+    foreach ($days as $day) {
+        if ($frequency === 'monthly') {
+            $week = (int) $weekOfMonth;
+            $year = (int) date('Y');
+            $month = (int) date('n');
+
+            // Same Nth-week-of-month window logic as computeNextDueDate(), but seeded
+            // from today rather than a prior due date — this only runs once, when the
+            // task is first created, to find its first-ever due window.
+            while (true) {
+                $firstOfMonth = new DateTime(sprintf('%04d-%02d-01', $year, $month));
+                $dow = (int) $firstOfMonth->format('w');
+                $daysToFirstSunday = ($dow === 0) ? 0 : (7 - $dow);
+                $windowStart = (clone $firstOfMonth)->modify("+{$daysToFirstSunday} days")->modify('+' . (($week - 1) * 7) . ' days');
+                $windowEnd = (clone $windowStart)->modify('+6 days');
+
+                if ($windowEnd->format('Y-m-d') >= $today) {
+                    $nextDue = $windowStart->format('Y-m-d');
+                    break;
+                }
+                $month++;
+                if ($month > 12) { $month = 1; $year++; }
+            }
+        } else {
+            // Seed from "yesterday" so a daily/weekly task can become due today,
+            // rather than always starting one full cycle out.
+            $yesterday = (new DateTime($today))->modify('-1 day')->format('Y-m-d');
+            $nextDue = computeNextDueDate($frequency, $day, $weekOfMonth, $yesterday);
+        }
+
+        $insert->execute([
+            'task_id' => $taskId,
+            'day_of_week' => $day,
+            'next_due_date' => $nextDue,
+        ]);
+    }
+}
+
+// ---- Task status (idle / due / overdue / done) ----
+
+// Monthly tasks stay "due" for their full 7-day window; daily/weekly tasks are only
+// "due" on their exact next_due_date.
+function classifyTaskStatus($nextDueDate, $frequency, $today = null) {
+    if ($nextDueDate === null) {
+        return 'idle';
+    }
+
+    $today = $today ?? date('Y-m-d');
+    $frequency = strtolower($frequency);
+
+    $windowStart = $nextDueDate;
+    $windowEnd = $nextDueDate;
+
+    if ($frequency === 'monthly') {
+        $end = new DateTime($nextDueDate);
+        $end->modify('+6 days');
+        $windowEnd = $end->format('Y-m-d');
+    }
+
+    if ($today < $windowStart) {
+        return 'idle';
+    }
+    if ($today > $windowEnd) {
+        return 'overdue';
+    }
+    return 'due';
+}
+
+function getDisplayStatus($rawStatus, $hasBeenCompleted) {
+    if ($rawStatus === 'overdue') {
+        return 'overdue';
+    }
+    if ($rawStatus === 'due') {
+        return 'due';
+    }
+    return $hasBeenCompleted ? 'done' : 'soon';
+}
+
+// <=> (not =) in the join below so it still matches when day_of_week is NULL (daily tasks)
+function getTaskStatus($pdo, $taskId, $frequency) {
+    $stmt = $pdo->prepare("
+        SELECT
+            task_day_status.id,
+            task_day_status.day_of_week,
+            task_day_status.last_completed,
+            task_day_status.next_due_date,
+            task_history.user_id AS completed_by_id,
+            COALESCE(completed_by_user.name, completed_by_user.username) AS completed_by_name
+        FROM task_day_status
+        LEFT JOIN task_history
+            ON task_history.task_id = task_day_status.task_id
+            AND task_history.day_of_week <=> task_day_status.day_of_week
+            AND task_history.completed_at = task_day_status.last_completed
+        LEFT JOIN users AS completed_by_user ON task_history.user_id = completed_by_user.id
+        WHERE task_day_status.task_id = :task_id
+        ORDER BY (task_day_status.next_due_date IS NULL), task_day_status.next_due_date ASC
+        LIMIT 1
+    ");
+    $stmt->execute(['task_id' => $taskId]);
+    $row = $stmt->fetch();
+
+    if (!$row) {
+        return null;
+    }
+
+    $row['status'] = classifyTaskStatus($row['next_due_date'], $frequency);
+    return $row;
+}

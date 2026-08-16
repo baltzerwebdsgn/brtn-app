@@ -1,0 +1,45 @@
+/* Core setup for the outer circle container */
+.circular-progress {
+  width: 150px;
+  height: 150px;
+  border-radius: var(--radius-circle);
+  margin: 0 auto;
+
+  /* Creates the progress ring visual using the HTML variable */
+  background: conic-gradient(
+    var(--color-citrus-lemon) calc(var(--progress) * 1%),
+    var(--color-ice300) 0
+  );
+
+  /* Center the inner circle */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Masks the center to create a donut/ring effect */
+.inner-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-circle);
+  background-color: var(--color-white);
+
+  /* Centers and styles the percentage text */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+}
+.progress-percentage {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-ice900);
+}
+.text {
+    font-family: var(--font-body);
+    font-weight: 100;
+    font-size: var(--font-text-size);
+    color: var(--color-ice500)
+}

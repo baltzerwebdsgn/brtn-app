@@ -3,8 +3,18 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<?= htmlspecialchars(csrfToken()) ?>">
     <title>BRIGHT'N</title>
-    <link rel="stylesheet" href="includes/main.css">
+    <link rel="stylesheet" href="includes/css/variables.css">
+    <link rel="stylesheet" href="includes/css/base.css">
+    <link rel="stylesheet" href="includes/css/buttons.css">
+    <link rel="stylesheet" href="includes/css/forms.css">
+    <link rel="stylesheet" href="includes/css/status-indicators.css">
+    <link rel="stylesheet" href="includes/css/task-card.css">
+    <link rel="stylesheet" href="includes/css/lists.css">
+    <link rel="stylesheet" href="includes/css/progress-ring.css">
+    <link rel="stylesheet" href="includes/css/home.css">
+    <link rel="stylesheet" href="includes/css/navigation.css">
 </head>
 <body>
 <?php if (in_array($page, ['login','register', 'forgot-password'])): ?>
@@ -13,7 +23,7 @@
             BR
             <span class = "logo-slot">
                 <img 
-                src="assets/brightn-logo.svg" 
+                src="assets/images/brightn-logo.svg" 
                 alt="flat icon side view of a lemon wedge with sparkles replacing the top two center lemon wedges"
                 />
             I

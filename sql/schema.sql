@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Generation Time: Jul 17, 2026 at 08:26 PM
+-- Generation Time: Aug 14, 2026 at 02:40 PM
 -- Server version: 8.0.46
 -- PHP Version: 8.3.30
 
@@ -46,7 +46,6 @@ CREATE TABLE `household_tasks` (
   `library_task_id` int DEFAULT NULL,
   `custom_name` varchar(255) DEFAULT NULL,
   `custom_instructions` text,
-  `last_completed` datetime DEFAULT NULL,
   `is_active` tinyint DEFAULT '1',
   `assigned_to` int DEFAULT NULL,
   `custom_room` varchar(100) DEFAULT NULL,
@@ -56,6 +55,20 @@ CREATE TABLE `household_tasks` (
   `custom_week_of_month` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `task_day_status`
+--
+
+CREATE TABLE `task_day_status` (
+  `id` int NOT NULL,
+  `task_id` int NOT NULL,
+  `day_of_week` varchar(20) DEFAULT NULL,
+  `last_completed` datetime DEFAULT NULL,
+  `next_due_date` date DEFAULT NULL,
+  `day_of_week_key` varchar(20) GENERATED ALWAYS AS (coalesce(`day_of_week`,_utf8mb4'')) STORED
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -67,7 +80,9 @@ CREATE TABLE `task_history` (
   `id` int NOT NULL,
   `task_id` int DEFAULT NULL,
   `user_id` int DEFAULT NULL,
-  `completed_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `completed_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `day_of_week` varchar(20) DEFAULT NULL,
+  `due_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -138,6 +153,13 @@ ALTER TABLE `household_tasks`
   ADD KEY `library_task_id` (`library_task_id`);
 
 --
+-- Indexes for table `task_day_status`
+--
+ALTER TABLE `task_day_status`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `task_day_unique` (`task_id`,`day_of_week_key`);
+
+--
 -- Indexes for table `task_history`
 --
 ALTER TABLE `task_history`
@@ -185,6 +207,12 @@ ALTER TABLE `household_tasks`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `task_day_status`
+--
+ALTER TABLE `task_day_status`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `task_history`
 --
 ALTER TABLE `task_history`
@@ -220,17 +248,23 @@ ALTER TABLE `household_tasks`
   ADD CONSTRAINT `household_tasks_ibfk_2` FOREIGN KEY (`library_task_id`) REFERENCES `task_library` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `zones`
+-- Constraints for table `task_day_status`
 --
-ALTER TABLE `zones`
-  ADD CONSTRAINT `zones_ibfk_1` FOREIGN KEY (`household_id`) REFERENCES `households` (`id`) ON DELETE CASCADE;
+ALTER TABLE `task_day_status`
+  ADD CONSTRAINT `task_day_status_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `household_tasks` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `task_history`
 --
 ALTER TABLE `task_history`
-  ADD CONSTRAINT `task_history_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `task_library` (`id`),
+  ADD CONSTRAINT `task_history_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `household_tasks` (`id`) ON DELETE RESTRICT,
   ADD CONSTRAINT `task_history_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `zones`
+--
+ALTER TABLE `zones`
+  ADD CONSTRAINT `zones_ibfk_1` FOREIGN KEY (`household_id`) REFERENCES `households` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

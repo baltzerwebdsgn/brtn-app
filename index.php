@@ -1,11 +1,6 @@
 <?php
 ob_start();
-session_set_cookie_params([
-    'httponly' => true,
-    'samesite' => 'Lax',
-    'secure' => isset($_SERVER['HTTPS']),
-]);
-session_start();
+require_once 'includes/session-init.php';
 require_once 'includes/db.php';
 require_once 'includes/auth.php';
 require_once 'includes/functions.php';
@@ -36,6 +31,9 @@ switch ($page) {
         break;
     case 'edit-all-tasks':
         include 'pages/edit-all-tasks.php';
+        break;
+    case 'assign-all-tasks':
+        include 'pages/assign-all-tasks.php';
         break;
     case 'house-metrics':
         include 'pages/house-metrics.php';

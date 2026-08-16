@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
+
+:root {
+    --color-white: #FFF;
+    --color-ice900: #323A59;
+    --color-ice700: #4A5578;
+    --color-ice500: #8992AC;
+    --color-ice300: #cfd6e3;
+    --color-ice100: #F0F3FA;
+    --color-lemon900: #8A6A10;
+    --color-lemon700: #C99A1F;
+    --color-lemon500: #FAE696;
+    --color-lemon300: #FCEEB9;
+    --color-lemon100: #FDF3D2;
+    --color-citrus-lemon: #F7CB48;
+    --color-citrus-orange: #FC9235;
+    --color-citrus-orangeLight: #FFD9AE;
+    --color-citrus-terracotta: #ED8D6B;
+    --color-citrus-grapefruit: #DB5F4F;
+    --color-citrus-grapefruitLight: #F3C2BA;
+    --color-citrus-mint: #C5F5C3;
+    --color-citrus-lime: #A19C40;
+    --color-citrus-limeLight: #E3E0A9;
+    --text-secondary: #6B7396;
+    --font-display:'Fredoka',ui-rounded,'SF Pro Rounded',sans-serif;
+    --font-body:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+    --icon-btn: 24px;
+    --font-heading-size: 28px;
+    --font-section-size: 16px;
+    --font-subsection-size: 14px;
+    --font-text-size: 12px;
+    --font-small-size: 10px;
+    --space-xs: 2px;
+    --space-sm: 8px;
+    --radius-circle: 50%;
+    --radius-pill: 999px;
+
+}

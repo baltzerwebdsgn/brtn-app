@@ -1,5 +1,5 @@
 <?php /** @var string $page */ ?>
-<?php if (!in_array($page, ['login', 'register','terms'])): ?>
+<?php if (in_array($page, ['home', 'breakdown', 'upcoming', 'settings'])): ?>
     <div class="navSpace"></div>
     <nav class="bottom-nav">
         <a href="index.php?page=home" class="nav-link <?= ($page == 'home' || !isset($page)) ? 'active' : '' ?>">
@@ -8,9 +8,9 @@
         <a href="index.php?page=breakdown" class="nav-link <?= ($page == 'breakdown') ? 'active' : '' ?>">
             <span class="navbar-icon material-symbols-outlined">assignment</span>
         </a>
-        <button id="addButton" onclick="window.location.href='index.php?page=add'">
+        <a href="index.php?page=settings&open=add-task" id="addButton" class="nav-link">
             <span class="material-symbols-outlined">add</span>
-        </button>
+        </a>
         <a href="index.php?page=upcoming" class="nav-link <?= ($page == 'upcoming') ? 'active' : '' ?>">
             <span class="navbar-icon material-symbols-outlined">list_alt</span>
         </a>

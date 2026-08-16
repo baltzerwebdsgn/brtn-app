@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('America/Los_Angeles');
 $host = getenv('DB_HOST') ?: 'db';
 $db   = getenv('DB_NAME') ?: 'cleaning_db';
 $user = getenv('DB_USER') ?: 'root';

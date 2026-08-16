@@ -1,0 +1,115 @@
+.form-group {
+    display: block;
+    margin-bottom: 16px;
+}
+input.addRoommate.input-error,
+input.addTask.input-error,
+input.reg.input-error {
+    border: 2px solid var(--color-citrus-grapefruit);
+}
+.subheading {
+    color: var(--color-ice500);
+    display: block;
+    font-weight: 600;
+    font-family: var(--font-body);
+    font-size: var(--font-subsection-size);
+    margin-bottom: 8px;
+}
+
+input.reg, input.login, input.settings, input.addRoommate, input.addTask, textarea.addTask {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--color-ice100);
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: var(--font-text-size);
+    font-family: var(--font-body);
+    color: var(--color-ice700);
+}
+input.reg:focus, input.login:focus, input.settings:focus, input.addRoommate:focus, input.addTask:focus, textarea.addTask:focus  {
+    outline: 2px solid var(--color-citrus-lemon);
+    outline-offset: 2px;
+    border-color: var(--color-citrus-lemon);
+}
+input.date {
+    font-family: var(--font-body);
+    width: 100%;
+}
+input.addTask[type="radio"],
+input.addTask[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  align-self: center;
+  margin-bottom: 0;
+}
+
+/* Hide default HTML checkbox */
+.switch input, input.addTask[type="radio"], input.addTask[type="checkbox"] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-ice300);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--color-white);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: var(--color-citrus-lemon);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--color-citrus-lemon);
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(20px);
+  -ms-transform: translateX(20px);
+  transform: translateX(20px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 24px;
+}
+
+.slider.round:before {
+  border-radius: var(--radius-circle);
+}
+.edit-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

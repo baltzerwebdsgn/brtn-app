@@ -1,0 +1,88 @@
+.bottom-nav {
+  position: fixed;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  display: flex;
+
+  /* Exact Dimensions & Radius */
+  width: 350px;
+  height: 75px;
+  border-radius: 25px; /* Adjusted to match the pill-shape in the image */
+
+  /* The Fill: Using a subtle gradient to mimic light hitting a surface */
+  background: linear-gradient(135deg,
+    rgba(240, 243, 250, 0.9) 0%,
+    rgba(224, 230, 242, 0.7) 100%);
+
+  /* The "Frost": High blur to match the milky look */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  /* The Border: Using a very thin, semi-transparent white */
+  border: 1px solid rgba(255, 255, 255, 0.6);
+
+  /* The Multi-Layer Shadow
+      Inset White: High-intensity light at -45 deg.
+      Inset Dark: Subtle depth on the opposite side.
+      Outer Dark: The 20px depth / 50px dispersion shadow.
+  */
+  box-shadow:
+    inset 2px 2px 4px rgba(255, 255, 255, 1),    /* Sharp top-left light highlight */
+    inset -2px -2px 6px rgba(0, 0, 0, 0.05),     /* Subtle bottom-right inner depth */
+    0 15px 35px rgba(0, 0, 0, 0.15),             /* Soft outer drop shadow */
+    0 5px 10px rgba(0, 0, 0, 0.05);              /* Closer, tighter shadow for grounding */
+
+  /* Centering items inside */
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 10px;
+}
+a.nav-link {
+  height: 34px;
+  width: 34px;
+  border-radius: var(--radius-circle);
+  border: none;
+  background: #CFD6E333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+  text-decoration: none;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 48;
+}
+a.active {
+  background: var(--color-citrus-lemon);
+  color: var(--color-ice500);
+  padding: 0%;
+}
+#addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  width: 34px;
+  border-radius: var(--radius-circle);
+  border: 2px solid var(--color-ice900);
+  background: var(--color-white);
+  padding: 0;
+}
+#addButton .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 700, 'GRAD' 0, 'opsz' 48;
+    font-size: var(--icon-btn);
+    color: var(--color-ice900);
+}
+
+.navbar-icon {
+  color: var(--color-ice900);
+  font-size: var(--icon-btn);
+}

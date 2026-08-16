@@ -1,0 +1,95 @@
+.task-card {
+    background: var(--color-white);
+    padding: 16px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+.task-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xs);
+}
+.task-title-text {
+    color: var(--color-ice700);
+    font-size: var(--font-subsection-size);
+}
+a.info-icon {
+    display: flex;
+    align-items: center;
+}
+.task-title .info-icon {
+    cursor: pointer;
+    color: var(--color-citrus-orange);
+    font-size: var(--icon-btn);
+}
+.task-content {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--space-xs);
+    align-content: stretch;
+    flex: 1;
+    min-width: 0;
+}
+.task-body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    column-gap: var(--space-sm);
+}
+.task-body-status {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--space-sm);
+}
+.task-meta-column {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--space-xs);
+    color: var(--color-ice500);
+    font-size: var(--font-text-size);
+}
+.task-meta-zone {
+    color: var(--color-ice500);
+    font-size: var(--font-text-size);
+}
+.task-action-primary, .task-action-secondary {
+    display: flex;
+    align-items: center;
+}
+.completed-by-note {
+    color: var(--color-citrus-orange);
+    font-size: var(--font-small-size);
+}
+.upcoming-body {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-sm);
+}
+.upcoming-profile-icon {
+    display: flex;
+    flex-shrink: 0;
+}
+.task-title-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+.task-title-room {
+    color: var(--color-ice500);
+    font-size: var(--font-text-size);
+}
+.task-meta-last.on-track {
+    color: var(--color-citrus-lime);
+}
+.task-layout {
+    display:flex;
+    align-content: stretch;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-sm);
+}

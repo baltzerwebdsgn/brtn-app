@@ -1,0 +1,110 @@
+.btn-primary {
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
+    text-decoration: none;
+    width: 100%;
+    padding: 14px;
+    background: var(--color-citrus-lemon);
+    border: none;
+    border-radius: var(--radius-pill);
+    font-size: var(--font-section-size);
+    font-weight: 700;
+    color: var(--color-ice700);
+    cursor: pointer;
+    font-family: var(--font-body);
+}
+
+.addRoommate-btn-text {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+.inline-icon-form {
+    display: flex;
+    align-items: center;
+}
+.btn-icon {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    color: var(--color-ice700);
+    padding: 0;
+}
+.btn-icon.danger {
+    border: none;
+    color: var(--color-citrus-grapefruit);
+    background-color: var(--color-white);
+    font-size: var(--icon-btn);
+}
+.task-status-btn {
+    background: none;
+    border: 2px solid var(--color-ice300);
+    border-radius: var(--radius-circle);
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    width: 24px;
+    height: 24px;
+    box-sizing: border-box;
+}
+.task-status-btn .material-symbols-outlined {
+    font-size: var(--icon-btn);
+    color: var(--color-ice300);
+}
+.task-status-btn.is-done .material-symbols-outlined {
+    font-size: 20px;
+}
+.task-status-btn.placeholder {
+    visibility: hidden;
+    pointer-events: none;
+}
+.task-status-btn.soon {
+    border: none;
+    background: none;
+}
+.edit-task-btn, .remove-task-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--color-ice500);
+}
+.edit-task-btn .material-symbols-outlined,
+.remove-task-btn .material-symbols-outlined {
+    font-size: var(--icon-btn);
+}
+button.remove-task-btn {
+    padding: 0;
+}
+.edit-task-btn {
+    text-decoration: none;
+}
+#logout-btn {
+    display: flex;
+    justify-content: flex-start;
+    padding: 9px 12px;
+}
+#logout-btn button {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 10px 10px;
+    border: 1px solid var(--color-ice300);
+    border-radius: var(--radius-pill);
+    background-color: var(--color-white);
+    color: var(--color-ice900);
+    font-weight: 600;
+    cursor: pointer;
+}
+.btn-close {
+    text-decoration: none;
+    color: var(--color-ice500);
+}
+#add-btn.btn-primary {
+    padding: 14px;
+    color: var(--color-ice700);
+}
