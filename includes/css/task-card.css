@@ -9,15 +9,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-xs);
+    gap: var(--space-sm);
 }
 .task-title-text {
     color: var(--color-ice700);
     font-size: var(--font-subsection-size);
-}
-a.info-icon {
-    display: flex;
-    align-items: center;
 }
 .task-title .info-icon {
     cursor: pointer;

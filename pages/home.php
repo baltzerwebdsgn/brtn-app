@@ -13,7 +13,8 @@ $stmt = $pdo->prepare("
         COALESCE(household_tasks.custom_frequency, task_library.frequency) AS frequency,
         COALESCE(household_tasks.custom_day_of_week, task_library.day_of_week) AS day_of_week,
         COALESCE(household_tasks.custom_week_of_month, task_library.week_of_month) AS week_of_month,
-        COALESCE(assigned_user.name, assigned_user.username) AS assignee_name
+        COALESCE(assigned_user.name, assigned_user.username) AS assignee_name,
+        COALESCE(household_tasks.custom_instructions, task_library.instructions) AS instructions
     FROM household_tasks
     LEFT JOIN task_library ON household_tasks.library_task_id = task_library.id
     LEFT JOIN users AS assigned_user ON household_tasks.assigned_to = assigned_user.id

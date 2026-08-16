@@ -52,6 +52,7 @@ $query = "
         COALESCE(household_tasks.custom_frequency, task_library.frequency) AS frequency,
         COALESCE(household_tasks.custom_day_of_week, task_library.day_of_week) AS day_of_week,
         COALESCE(household_tasks.custom_week_of_month, task_library.week_of_month) AS week_of_month,
+        COALESCE(household_tasks.custom_instructions, task_library.instructions) AS instructions,
         COALESCE(assigned_user.name, assigned_user.username) AS assignee_name
     FROM household_tasks
     LEFT JOIN task_library ON household_tasks.library_task_id = task_library.id
@@ -130,7 +131,12 @@ $zones = $zoneStmt->fetchAll();
                 <div class="assign-border" data-frequency="<?= strtolower($task['frequency']) ?>" data-original-assignee-id="<?= (int) $task['assigned_to'] ?>" data-original-assignee-name="<?= htmlspecialchars($task['assignee_name']) ?>">
                     <div class="assign-list-row"> 
                         <div class="assign-list-row-text">
-                            <strong class="task-title-text"><?= htmlspecialchars($task['name']) ?></strong>
+                            <div class="task-title">
+                                <strong class="task-title-text"><?= htmlspecialchars($task['name']) ?></strong>
+                                <button type="button" class="info-icon" data-task-name="<?= htmlspecialchars($task['name']) ?>" data-task-frequency="<?= htmlspecialchars(ucfirst(strtolower($task['frequency']))) ?>" data-task-frequency-detail="<?= htmlspecialchars(formatFrequencyDetailExpanded($task['frequency'], $task['day_of_week'], $task['week_of_month']) ?? '') ?>" data-task-time="<?= htmlspecialchars($task['total_time']) ?> mins" data-task-description="<?= htmlspecialchars(!empty($task['instructions']) ? $task['instructions'] : 'No description added.') ?>">
+                                    <span class="material-symbols-outlined info-icon">info</span>
+                                </button>
+                            </div>
                             <div class="task-meta-zone">
                                 <?= htmlspecialchars($task['room']) ?> &middot; <em><?= htmlspecialchars($task['total_time']) ?>m</em> &middot; <?= formatFrequencyDetailHtml($task['frequency'], $task['day_of_week'], $task['week_of_month']) ?>
                             </div>

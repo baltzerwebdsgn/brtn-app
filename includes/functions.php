@@ -6,6 +6,54 @@ function abbreviateDay($day) {
     $map = ['Sunday' => 'Su', 'Monday' => 'Mo', 'Tuesday' => 'Tu', 'Wednesday' => 'We', 'Thursday' => 'Th', 'Friday' => 'Fr', 'Saturday' => 'Sa'];
     return $map[$day] ?? substr($day, 0, 2);
 }
+function formatFrequencyDetailExpanded($frequency, $dayOfWeek, $weekOfMonth) {
+    $frequency = strtolower($frequency);
+    $order = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    if ($frequency === 'monthly' && $weekOfMonth) {
+        return 'Every ' . formatWeekOfMonth($weekOfMonth) . ' week of the month';
+    }
+
+    if ($frequency === 'weekly' && $dayOfWeek) {
+        $days = explode(',', $dayOfWeek);
+        $indexes = array_map(function ($day) use ($order) {
+            return array_search($day, $order);
+        }, $days);
+        sort($indexes);
+        $count = count($indexes);
+
+        if ($count === 1) {
+            return 'Every ' . $order[$indexes[0]];
+        }
+
+        $indexSet = array_flip($indexes);
+        $consecutiveStart = null;
+        for ($start = 0; $start < 7; $start++) {
+            $isMatch = true;
+            for ($i = 0; $i < $count; $i++) {
+                if (!isset($indexSet[($start + $i) % 7])) {
+                    $isMatch = false;
+                    break;
+                }
+            }
+            if ($isMatch) {
+                $consecutiveStart = $start;
+                break;
+            }
+        }
+
+        if ($consecutiveStart !== null) {
+            $endIndex = ($consecutiveStart + $count - 1) % 7;
+            return 'Every ' . $order[$consecutiveStart] . ' thru ' . $order[$endIndex];
+        }
+
+        $dayNames = array_map(function ($i) use ($order) { return $order[$i]; }, $indexes);
+        $last = array_pop($dayNames);
+        return 'Every ' . implode(', ', $dayNames) . ' & ' . $last;
+    }
+
+    return null;
+}
 
 function formatWeekOfMonth($week) {
     if (is_numeric($week)) {

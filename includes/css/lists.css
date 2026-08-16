@@ -17,6 +17,9 @@
   padding: 20px 20px;
   cursor: pointer;
 }
+.assign-list-row {
+    gap: 10px;
+}
 .account-title {
     display:flex;
     flex-direction: row;
@@ -37,6 +40,8 @@ span.account-icon, span.info-icon, span.housemate-icon {
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
+    flex: 1;
+    min-width: 0;
 }
 .assign-avatars {
     display: flex;

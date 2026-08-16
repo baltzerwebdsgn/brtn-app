@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="includes/css/progress-ring.css">
     <link rel="stylesheet" href="includes/css/home.css">
     <link rel="stylesheet" href="includes/css/navigation.css">
+    <link rel="stylesheet" href="includes/css/modal.css">
 </head>
 <body>
 <?php if (in_array($page, ['login','register', 'forgot-password'])): ?>

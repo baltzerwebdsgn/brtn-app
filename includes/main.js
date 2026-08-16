@@ -18,6 +18,8 @@ document.querySelectorAll('.task-meta-last[data-next-date]').forEach(function (e
 
     el.classList.add(next >= today ? 'on-track' : 'overdue');
 });
+
+// ---- Deep-link to the Add/Edit Task section ----
 // Scrolls to the Add a task modal if user clicks to edit a task
 var params = new URLSearchParams(window.location.search);
 if (params.has('edit_task') || params.get('open') === 'add-task') {
@@ -25,10 +27,29 @@ if (params.has('edit_task') || params.get('open') === 'add-task') {
     if (target) target.scrollIntoView();
 }
 
-// Cancel action
+// ---- Task info modal (open + close) ----
+// Opens and populates the task-info overlay from the clicked icon's data-* attributes
+document.querySelectorAll('.info-icon[data-task-name]').forEach(function (icon) {
+    icon.addEventListener('click', function () {
+        document.querySelector('.modal-title').textContent = this.dataset.taskName;
+        document.querySelector('.modal-frequency').textContent = this.dataset.taskFrequency;
+        document.querySelector('.modal-frequency-detail').textContent = this.dataset.taskFrequencyDetail;
+        document.querySelector('.modal-time').textContent = this.dataset.taskTime;
+        document.querySelector('.modal-description').textContent = this.dataset.taskDescription;
+        document.body.classList.add('modal-open');
+    });
+});
+
+// Generic close handler — works for any [data-close-target], not just the task-info
+// modal, so it'll cover future overlays without needing a new listener.
 document.querySelectorAll('.btn-close[data-close-target]').forEach(function (btn) {
     btn.addEventListener('click', function () {
-        document.querySelector(this.dataset.closeTarget).classList.add('hidden');
+        var target = document.querySelector(this.dataset.closeTarget);
+        if (target.classList.contains('modal-overlay')) {
+            document.body.classList.remove('modal-open');
+        } else {
+            target.classList.add('hidden');
+        }
     });
 });
 
@@ -152,7 +173,7 @@ document.querySelectorAll('.task-status-btn').forEach(function (btn) {
                 var icon = btn.querySelector('.material-symbols-outlined');
                 var completedByNote = card.querySelector('.completed-by-note');
                 var assignedTo = card.dataset.assignedTo;
-                
+
                 if (completedByNote) {
                     if (data.status === 'done' && data.completed_by_id && String(data.completed_by_id) !== assignedTo) {
                         completedByNote.textContent = 'Completed by ' + data.completed_by_name;

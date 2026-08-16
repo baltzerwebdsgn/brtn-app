@@ -31,9 +31,9 @@ $canUndo = $isDone && ($isHead || (!empty($allowUndo) && $isAssignedToMe));
                     <?php if ($cardActions === 'upcoming'): ?>
                         <span class="task-title-room"><?= htmlspecialchars($task['room']) ?></span>
                     <?php endif; ?>
-                    <a class="info-icon">
+                    <button type="button" class="info-icon" data-task-name="<?= htmlspecialchars($task['name']) ?>" data-task-frequency="<?= htmlspecialchars(ucfirst(strtolower($task['frequency']))) ?>" data-task-frequency-detail="<?= htmlspecialchars(formatFrequencyDetailExpanded($task['frequency'], $task['day_of_week'], $task['week_of_month']) ?? '') ?>" data-task-time="<?= htmlspecialchars($task['total_time']) ?> mins" data-task-description="<?= htmlspecialchars(!empty($task['instructions']) ? $task['instructions'] : 'No description added.') ?>">
                         <span class="material-symbols-outlined info-icon">info</span>
-                    </a>
+                    </button>
                 </div>
             </div>
             <?php if ($cardActions === 'upcoming'): ?>
