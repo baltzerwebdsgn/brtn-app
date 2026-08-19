@@ -7,6 +7,9 @@
 .soon {
     background-color: var(--color-ice300);
 }
+.danger, .overdue {
+    color: var(--color-citrus-grapefruit);
+}
 .task-status-info {
     text-transform: uppercase;
     font-size: var(--font-text-size);
@@ -43,9 +46,6 @@
     border: none;
     padding: 12px;
 }
-.danger, .overdue {
-    color: var(--color-citrus-grapefruit);
-}
 .success {
     color: var(--color-cirtus-lime);
 }
@@ -59,8 +59,8 @@
     font-size: var(--font-text-size);
 }
 .chip-active, input.addTask:checked + label.addTask.chip {
-    background-color: var(--color-ice900);
-    color: var(--color-ice100);
+    background-color: var(--color-citrus-lemon);
+    color: var(--color-ice900);
 }
 button.chip {
     border: none;
@@ -83,6 +83,26 @@ label.addTask.chip {
     align-items: center;
     justify-content: flex-end;
     margin: 16px 0;
+}
+.filter-text {
+    margin: 0;
+    color: var(--color-ice700);
+}
+#filter-sort {
+    margin-bottom: 0;
+}
+.filter-title {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-sm);
+    color: var(--color-ice700);
+}
+.filter-icon {
+    margin-left: -2px;
 }
 .filter-summary {
     cursor: pointer;
@@ -108,7 +128,7 @@ label.addTask.chip {
 }
 .chevron {
     display: inline-block;
-    font-size: 0.75rem;
+    font-size: 16px;
     transition: transform 0.2s ease;
 }
 details:not([open]) .chevron {

@@ -1,5 +1,6 @@
 <?php /** @var string $page */ ?>
 <?php
+$isHead = $_SESSION['role'] === 'head';
 $roommateError = null;
 $roommateName = '';
 $roommateEmail = '';
@@ -15,7 +16,7 @@ $editingZoneId = null;
 $fallbackTask = null;
 
 // Allow the head of household to change the name of the household
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['household-name']) && $_SESSION['role'] === 'head') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['household-name']) && $isHead) {
     requireCsrf();
     $newHouseholdName = trim($_POST['household-name']);
 
@@ -30,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['household-name']) && 
     exit;
 }
 // Add a roommate logic and make sure it is only done by the head of household
-if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name-roommate']) && $_SESSION['role'] === 'head') {
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name-roommate']) && $isHead) {
     requireCsrf();
     $roommateName = ucfirst(strtolower(trim($_POST['name-roommate'])));
     $roommateEmail = $_POST['email-roommate'];
@@ -79,7 +80,7 @@ $zoneStmt->execute(['household_id' => $_SESSION['household_id']]);
 $zones = $zoneStmt->fetchAll();
 
 // Delete the roommate and make sure its only being done by the head of household
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_roommate_id']) && $_SESSION['role'] === 'head') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_roommate_id']) && $isHead) {
     requireCsrf();
     $deleteId = (int) $_POST['delete_roommate_id'];
     $headStmt = $pdo->prepare("SELECT id FROM users WHERE household_id = :household_id AND role = 'head'");
@@ -103,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_roommate_id'])
     exit;
 }
 // Add new task logic
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name-new-task']) && $_SESSION['role'] === 'head') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name-new-task']) && $isHead) {
     requireCsrf();
     $taskName = ucwords(strtolower(trim($_POST['name-new-task'])));
     if ($taskName === '') {
@@ -259,7 +260,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name-new-task']) && $
 }
 
 // edit a task logic
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' && isset($_GET['edit_task']) && $_SESSION['role'] === 'head') {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && isset($_GET['edit_task']) && $isHead) {
     $editStmt = $pdo->prepare("
         SELECT
             household_tasks.id,
@@ -334,7 +335,7 @@ $activeEditId = $editTaskId ?? ($editingTask['id'] ?? null);
             </label>
         </div>
     </div> -->
-    <?php if ($_SESSION['role'] === 'head'): ?>
+    <?php if ($isHead): ?>
         <div class="account-border">
             <a href="index.php?page=edit-all-tasks&from=settings" class="account-menu-row <?= ($page == 'edit-all-tasks') ? 'active' : '' ?>">
                 <span class="account-title">    
@@ -363,7 +364,7 @@ $activeEditId = $editTaskId ?? ($editingTask['id'] ?? null);
             <span class="account-text">></span>
         </a>
     </div>
-    <!-- <?php if ($_SESSION['role'] === 'head'): ?>
+    <!-- <?php if ($isHead): ?>
         <div class="account-border">
             <a href="index.php?page=vacation-mode&from=settings" class="account-menu-row <?= ($page == 'vacation-mode') ? 'active' : '' ?>">
                 <span class="account-title">    
@@ -379,7 +380,7 @@ $activeEditId = $editTaskId ?? ($editingTask['id'] ?? null);
 <!-- Household name for all w/ head only permission to change the name -->
 <h2>Household</h2>
 <div class="task-card">
-    <?php if ($_SESSION['role'] === 'head'): ?>
+    <?php if ($isHead): ?>
         <form action="index.php?page=settings" method="POST">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
             <div class="form-group">    
@@ -414,13 +415,13 @@ $activeEditId = $editTaskId ?? ($editingTask['id'] ?? null);
                 </div>
             </div>
             <div class="housemate-options">
-                <?php if ($_SESSION['role'] === 'head' || $housemate['id'] === $_SESSION['user_id']): ?>
+                <?php if ($isHead || $housemate['id'] === $_SESSION['user_id']): ?>
                     <!-- <span class="housemate-icon material-symbols-outlined">
                         pause_circle
                     </span> -->
                 <?php endif; ?>
-                <?php if ($_SESSION['role'] === 'head' && $housemate['role'] === 'roommate'): ?>
-                    <form action="index.php?page=settings" method="POST" class="inline-icon-form" onsubmit="return confirm('Remove this roommate?\nThis cannot be undone.');">
+                <?php if ($isHead && $housemate['role'] === 'roommate'): ?>
+                    <form action="index.php?page=settings" method="POST" class="inline-icon-form" onsubmit="return confirm('Remove this roommate?\n\nAll their tasks will be reassigned to you.\n\nThis cannot be undone.');">
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
                         <input type="hidden" name="delete_roommate_id" value="<?= htmlspecialchars($housemate['id']) ?>">
                         <button type="submit" class="danger btn-icon">
@@ -436,7 +437,7 @@ $activeEditId = $editTaskId ?? ($editingTask['id'] ?? null);
 <?php endforeach; ?>
 
 <!-- Add Roommate Section for Head of Household User -->
-<?php if ($_SESSION['role'] === 'head'): ?>
+<?php if ($isHead): ?>
     <h2>Add Roommate</h2>
     <div class="task-card">
         <form action="" method="POST" class="add-roommate-form">
@@ -490,9 +491,10 @@ $activeEditId = $editTaskId ?? ($editingTask['id'] ?? null);
         <?php endif; ?>
     </div>
 <?php endif; ?>
-
+<!-- Zones details with head having the power to add more zones -->
+<?php include 'includes/zones.php'; ?>
 <!-- Add a custom task form for head of household only -->
-<?php if ($_SESSION['role'] === 'head'): ?>
+<?php if ($isHead): ?>
     <div class="edit-heading">
         <h2 id="add-a-task"><?= $activeEditId ? 'Editing Task' : 'Add Task' ?></h2>
         <?php if ($activeEditId): ?>

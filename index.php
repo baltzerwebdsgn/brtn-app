@@ -41,9 +41,9 @@ switch ($page) {
     case 'vacation-mode':
         include 'pages/vacation-mode.php';
         break;
-    case 'zones':
-        include 'pages/zones.php';
-        break;
+    case 'zone':
+        include 'pages/zone.php';
+    break;
     case 'register':
         include 'pages/register.php';
         break;

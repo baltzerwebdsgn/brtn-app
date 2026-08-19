@@ -1,6 +1,6 @@
 <?php
 $from = $_GET['from'] ?? 'settings';
-$sort = $_GET['sort'] ?? 'name';
+$sort = $_GET['sort'] ?? 'title';
 $showDateSort = false;
 $cardActions = 'edit';
 $flashEditedTaskId = $_SESSION['flash_edited_task_id'] ?? null;
@@ -9,7 +9,7 @@ $page = 'edit-all-tasks';
 $filter = $_GET['filter'] ?? 'All';
 $zone_filter = $_GET['room'] ?? 'All';
 $assignee_filter = $_GET['assignee'] ?? 'All';
-$showHideDone = false;
+$showStatusFilter = false;
 
 $currentParams = [
     'from' => $from,

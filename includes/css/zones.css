@@ -1,0 +1,156 @@
+.zone-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+    margin-top: 10px;
+}
+.zone-card {
+    position: relative;
+    display: block;
+    background-color: var(--color-citrus-terracotta);
+    border-radius: 12px;
+    padding: 0;
+    padding-bottom: 0;
+    color: var(--color-ice900);
+    text-decoration: none;
+    overflow: hidden;
+    height: 75px;
+}
+.zone-card h3 {
+    margin: 0;
+    font-size: var(--font-subsection-size);
+    position: relative;
+    z-index: 1;
+}
+.zoneCard-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
+    padding-top: 12px;
+    padding-left: 12px;
+}
+.zone-title-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+.zone-icon {
+    display: block;
+    position: absolute;
+    bottom: -16px;
+    right: -16px;
+    width: 100px;
+    height: 100px;
+    opacity: 0.25;
+    background-color: var(--color-ice900);
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    mask-position: center;
+    -webkit-mask-position: center;
+}
+.zone-icon-lg {
+    display: block;
+    width: 48px;
+    height: 48px;
+    background-color: var(--color-ice900);
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    mask-position: center;
+    -webkit-mask-position: center;
+}
+
+.zone-task-count {
+    font-size: var(--font-text-size);
+    position: relative;
+    z-index: 1;
+    margin-bottom: var(--space-xs);
+}
+.zone-progress-bar {
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+.zone-progress-fill {
+    height: 100%;
+    background-color: var(--color-citrus-lemon);
+    border-radius: var(--radius-pill);
+}
+.zone-card-new {
+    background-color: transparent;
+    border: 2px dashed var(--color-ice500);
+    color: var(--color-ice500);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    gap: var(--space-xs);
+}
+#new-zone-text {
+    font-size: var(--font-subsection-size);
+}
+/* Zone detail page */
+.zone-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.zone-icon-lg {
+    width: 48px;
+    height: 48px;
+}
+.zone-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+/* Icon picker (zone create/edit form) */
+.icon-picker {
+    grid-template-columns: repeat(5, 1fr);
+}
+.icon-chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+}
+.icon-chip img {
+    width: 24px;
+    height: 24px;
+}
+.icon-chip-img {
+    display: block;
+    width: 24px;
+    height: 24px;
+    background-color: var(--color-ice700);
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    mask-position: center;
+    -webkit-mask-position: center;
+}
+
+.replacement-zone-text {
+    margin-top: 0;
+}
+.zone-picker-card {
+    position: relative;
+}
+.zone-picker-card .btn-close {
+    position: absolute;
+    top: 12px; 
+    right: 12px;
+}
+.zone-picker-header p {
+    padding-right: 32px;
+    overflow: visible;
+}

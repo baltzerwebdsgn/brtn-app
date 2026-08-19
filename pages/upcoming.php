@@ -4,8 +4,7 @@ $filter = $_GET['filter'] ?? 'All';
 $zone_filter = $_GET['room'] ?? 'All';
 $sort = $_GET['sort'] ?? 'date';
 $showDateSort = true;
-$hideDone = isset($_GET['hide_done']);
-$showHideDone = false;
+$showStatusFilter = false;
 $assignee_filter = $_GET['assignee'] ?? 'All';
 $cardActions = 'upcoming';
 
@@ -13,7 +12,6 @@ $currentParams = [
     'filter' => $filter,
     'room' => $zone_filter,
     'sort' => $sort,
-    'hideDone' => $hideDone,
     'assignee' => $assignee_filter,
 ];
 
@@ -68,9 +66,6 @@ foreach ($tasks as &$task) {
 }
 unset($task);
 
-if ($hideDone) {
-    $tasks = array_values(array_filter($tasks, function ($t) { return $t['status'] !== 'idle'; }));
-}
 if ($sort === 'date') {
     usort($tasks, function ($a, $b) {
         return strcmp($a['next_due_date'] ?? '9999-12-31', $b['next_due_date'] ?? '9999-12-31');

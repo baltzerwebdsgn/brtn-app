@@ -3,13 +3,20 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 0;
 }
 .home-title-text {
     display: flex;
     flex-direction: column;
     justify-self: flex-start;
     gap: 0;
+}
+.home-hn {
+    margin-top:-8px;
+    text-transform: capitalize;
+}
+.text-header {
+    margin-top: 8px;
 }
 .profile-icon {
     display: inline-flex;

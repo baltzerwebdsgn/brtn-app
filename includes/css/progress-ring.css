@@ -37,9 +37,4 @@
     font-weight: bold;
     color: var(--color-ice900);
 }
-.text {
-    font-family: var(--font-body);
-    font-weight: 100;
-    font-size: var(--font-text-size);
-    color: var(--color-ice500)
-}
+

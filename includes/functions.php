@@ -162,14 +162,19 @@ function taskFilterLink($page, $current, $overrides = []) {
     if (isset($params['assignee'])) {
         $query['assignee'] = $params['assignee'];
     }
-    if (!empty($params['hideDone'])) {
-        $query['hide_done'] = 1;
+    if (isset($params['id'])) {
+        $query['id'] = $params['id'];
     }
+    $query['status'] = $params['status'] ?? 'All';
 
     return 'index.php?' . http_build_query($query);
 }
 
+
 // ---- Due-date scheduling ----
+function wasCompletedToday($lastCompleted) {
+    return !empty($lastCompleted) && substr($lastCompleted, 0, 10) === date('Y-m-d');
+}
 
 function computeNextDueDate($frequency, $dayOfWeek, $weekOfMonth, $fromDate) {
     $from = new DateTime($fromDate);
@@ -328,4 +333,31 @@ function getTaskStatus($pdo, $taskId, $frequency) {
 
     $row['status'] = classifyTaskStatus($row['next_due_date'], $frequency);
     return $row;
+}
+// ---- Try to match zone name with corresponding icon ----
+function matchZoneIcon($name) {
+    $availableIcons = [
+        'basement', 'bathroom', 'bedroom', 'bedroom-alt-1', 'bedroom-alt-2',
+        'cat-tree', 'closet', 'dining', 'garden', 'hallway', 'houseplant',
+        'kitchen', 'kitchen-alt-1', 'laundry', 'living-room', 'nursery',
+        'office', 'outside', 'storage', 'toilet', 'trash', 'trees',
+    ];
+
+    $slug = strtolower(trim($name));
+    $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+    $slug = trim($slug, '-');
+
+    if (in_array($slug, $availableIcons, true)) {
+        return $slug;
+    }
+
+    $singleWordIcons = ['basement', 'bathroom', 'bedroom', 'closet', 'dining', 'garden', 'hallway', 'houseplant', 'kitchen', 'laundry', 'nursery', 'office', 'outside', 'storage', 'toilet', 'trash', 'trees'];
+    $words = explode('-', $slug);
+    foreach ($singleWordIcons as $icon) {
+        if (in_array($icon, $words, true)) {
+            return $icon;
+        }
+    }
+
+    return null;
 }

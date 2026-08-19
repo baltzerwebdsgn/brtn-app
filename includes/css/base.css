@@ -58,6 +58,12 @@ b {
     margin-top:-1em;
     margin-bottom: 1em;
 }
+.text {
+    font-family: var(--font-body);
+    font-weight: 100;
+    font-size: var(--font-text-size);
+    color: var(--color-ice500)
+}
 @media (min-width:300px){
   .brand-wordmark-wrap{font-size:2.5rem;}
 }

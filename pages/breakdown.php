@@ -2,9 +2,9 @@
 $page = 'breakdown';
 $filter = $_GET['filter'] ?? 'All';
 $zone_filter = $_GET['room'] ?? 'All';
-$sort = $_GET['sort'] ?? 'date';
-$showDateSort = true;
-$hideDone = isset($_GET['hide_done']);
+$sort = $_GET['sort'] ?? 'title';
+$showDateSort = false;
+$statusFilter = $_GET['status'] ?? 'All';
 $assignee_filter = $_GET['assignee'] ?? 'All';
 $cardActions = 'status';
 $allowUndo = false;
@@ -14,7 +14,7 @@ $currentParams = [
     'filter' => $filter,
     'room' => $zone_filter,
     'sort' => $sort,
-    'hideDone' => $hideDone,
+    'status' => $statusFilter,
     'assignee' => $assignee_filter,
 ];
 
@@ -67,8 +67,11 @@ foreach ($tasks as &$task) {
 }
 unset($task);
 
-if ($hideDone) {
-    $tasks = array_values(array_filter($tasks, function ($t) { return $t['status'] !== 'idle'; }));
+if ($statusFilter !== 'All') {
+    $tasks = array_values(array_filter($tasks, function ($t) use ($statusFilter) {
+        $displayStatus = getDisplayStatus($t['status'], wasCompletedToday($t['last_completed']));
+        return strtolower($statusFilter) === $displayStatus;
+    }));
 }
 if ($sort === 'date') {
     usort($tasks, function ($a, $b) {

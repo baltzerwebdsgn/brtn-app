@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Generation Time: Aug 14, 2026 at 02:40 PM
+-- Generation Time: Aug 16, 2026 at 11:16 PM
 -- Server version: 8.0.46
 -- PHP Version: 8.3.30
 
@@ -130,7 +130,8 @@ CREATE TABLE `users` (
 CREATE TABLE `zones` (
   `id` int NOT NULL,
   `household_id` int NOT NULL,
-  `name` varchar(100) NOT NULL
+  `name` varchar(100) NOT NULL,
+  `icon` varchar(50) NOT NULL DEFAULT 'storage'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -150,7 +151,8 @@ ALTER TABLE `households`
 ALTER TABLE `household_tasks`
   ADD PRIMARY KEY (`id`),
   ADD KEY `household_id` (`household_id`),
-  ADD KEY `library_task_id` (`library_task_id`);
+  ADD KEY `library_task_id` (`library_task_id`),
+  ADD KEY `household_tasks_ibfk_3` (`assigned_to`);
 
 --
 -- Indexes for table `task_day_status`
@@ -188,6 +190,7 @@ ALTER TABLE `users`
 --
 ALTER TABLE `zones`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `zone_name_unique` (`household_id`,`name`),
   ADD KEY `household_id` (`household_id`);
 
 --
@@ -245,7 +248,8 @@ ALTER TABLE `zones`
 --
 ALTER TABLE `household_tasks`
   ADD CONSTRAINT `household_tasks_ibfk_1` FOREIGN KEY (`household_id`) REFERENCES `households` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `household_tasks_ibfk_2` FOREIGN KEY (`library_task_id`) REFERENCES `task_library` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `household_tasks_ibfk_2` FOREIGN KEY (`library_task_id`) REFERENCES `task_library` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `household_tasks_ibfk_3` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`id`) ON DELETE RESTRICT;
 
 --
 -- Constraints for table `task_day_status`

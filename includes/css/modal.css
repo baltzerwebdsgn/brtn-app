@@ -19,7 +19,7 @@ body.modal-open .bottom-nav {
 .modal-card {
     background: var(--color-white);
     border-radius: 16px;
-    padding: 24px;
+    padding: 20px 20px 24px 24px;
     width: min(90%, 400px);
     max-height: 80vh;
     overflow-y: auto;
@@ -69,6 +69,7 @@ body.modal-open .bottom-nav {
     font-family: var(--font-display);
     text-transform: capitalize;
     margin: 0;
+    font-size: 20px;
 }
 .modal-frequency-section {
     width: 140px;

@@ -124,8 +124,7 @@ if ($action === 'undo') {
 
     $restoredLastCompleted = $previous ? $previous['completed_at'] : null;
     $rawStatus = classifyTaskStatus($lastEntry['due_date'], $task['frequency']);
-    $displayStatus = getDisplayStatus($rawStatus, !empty($restoredLastCompleted));
-
+    $displayStatus = getDisplayStatus($rawStatus, wasCompletedToday($restoredLastCompleted));
     echo json_encode([
         'success' => true,
         'status' => $displayStatus,

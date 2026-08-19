@@ -17,12 +17,14 @@ input.reg.input-error {
 }
 
 input.reg, input.login, input.settings, input.addRoommate, input.addTask, textarea.addTask {
-    width: 100%;
+    width: 112.5%; /* done to fix safari zoom-in issue*/
     padding: 12px 14px;
-    border: 1px solid var(--color-ice100);
+    border: 1px solid var(--color-ice300);
     border-radius: 8px;
     box-sizing: border-box;
-    font-size: var(--font-text-size);
+    font-size: var(--font-section-size);
+    transform: scale(.875); /* done to fix safari zoom-in issue*/
+    transform-origin: top left; /* done to fix safari zoom-in issue*/
     font-family: var(--font-body);
     color: var(--color-ice700);
 }

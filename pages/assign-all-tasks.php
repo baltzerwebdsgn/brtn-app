@@ -1,12 +1,12 @@
 <?php
 $from = $_GET['from'] ?? 'settings';
-$sort = $_GET['sort'] ?? 'name';
+$sort = $_GET['sort'] ?? 'title';
 $showDateSort = false;
 $filter = $_GET['filter'] ?? 'All';
 $page = 'assign-all-tasks';
 $zone_filter = $_GET['room'] ?? 'All';
 $showAssigneeFilter = false;
-$showHideDone = false;
+$showStatusFilter = false;
 
 $currentParams = [
     'from' => $from,
@@ -123,8 +123,7 @@ $zones = $zoneStmt->fetchAll();
             }
         ?>
         <h3 class="housemate-name" id="housemate-header-<?= $housemate['id'] ?>">
-            <?= htmlspecialchars($housemate['name'] ?? $housemate['username']) ?> &ndash; <span class="total-count"><?= count($housemateTasks) ?></span> Total tasks
-            <span class="assign-summary">D<span class="daily-count"><?= $dailyCount ?></span> &middot; W<span class="weekly-count"><?= $weeklyCount ?></span> &middot; M<span class="monthly-count"><?= $monthlyCount ?></span></span>
+            <?= htmlspecialchars($housemate['name'] ?? $housemate['username']) ?> &ndash; <span class="total-count"><?= count($housemateTasks) ?></span> Tasks
         </h3>
         <div class="task-card assign-list" id="housemate-list-<?= $housemate['id'] ?>">
             <?php foreach ($housemateTasks as $task): ?>

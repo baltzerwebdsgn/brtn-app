@@ -4,13 +4,15 @@
 $hasBeenCompleted = !empty($task['last_completed']);
 $rawStatus = $task['status'] ?? 'due';
 $isDone = $rawStatus === 'idle' && $hasBeenCompleted;
-$statusClass = getDisplayStatus($rawStatus, $hasBeenCompleted);
+$completedToday = wasCompletedToday($task['last_completed']);
+$statusClass = getDisplayStatus($rawStatus, $completedToday);
 $statusLabel = ucfirst($statusClass);
 
 $isHead = $_SESSION['role'] === 'head';
 $isAssignedToMe = !isset($task['assigned_to']) || (int) $task['assigned_to'] === (int) $_SESSION['user_id'];
 $canUndo = $isDone && ($isHead || (!empty($allowUndo) && $isAssignedToMe));
 ?>
+
 
 <div class="task-card" id="task-<?= htmlspecialchars($task['id']) ?>" data-assigned-to="<?= (int) ($task['assigned_to'] ?? 0) ?>">
     <div class="task-layout">
@@ -47,11 +49,12 @@ $canUndo = $isDone && ($isHead || (!empty($allowUndo) && $isAssignedToMe));
             <?php else: ?>
                 <div class="task-body">
                     <div class="task-meta-column">
-                        <div class="task-meta-zone">
-                            <?= htmlspecialchars($task['room']) ?> &middot; <i><?= htmlspecialchars($task['total_time']) ?>m</i>
-                        </div>
-                        <div class="task-meta-frequency">
-                            <?= formatFrequencyDetailHtml($task['frequency'], $task['day_of_week'], $task['week_of_month']) ?><?php if ((!isset($showAssignee) || $showAssignee) || !$isAssignedToMe): ?> &middot; <?= htmlspecialchars($task['assignee_name'] ?? 'Unassigned') ?><?php endif; ?>
+                        <div class="task-meta-line">
+                            <?php if (!isset($showZone) || $showZone): ?>
+                                <?= htmlspecialchars($task['room']) ?> &middot; <?php endif; ?><i><?= htmlspecialchars($task['total_time']) ?>m</i> &middot; <?= formatFrequencyDetailHtml($task['frequency'], $task['day_of_week'], $task['week_of_month']) ?>
+                                    <?php if ((!isset($showAssignee) || $showAssignee) || !$isAssignedToMe): ?> 
+                                        &middot; <?= htmlspecialchars($task['assignee_name'] ?? 'Unassigned') ?>
+                            <?php endif; ?>
                         </div>
                         <div class="completed-by-note" style="<?= ($isDone && !empty($task['completed_by_id']) && (int) $task['completed_by_id'] !== (int) $task['assigned_to']) ? '' : 'display:none;' ?>">
                             <?= !empty($task['completed_by_name']) ? 'Completed by ' . htmlspecialchars($task['completed_by_name']) : '' ?>
@@ -77,13 +80,11 @@ $canUndo = $isDone && ($isHead || (!empty($allowUndo) && $isAssignedToMe));
                                     </button>
                                 </form>
                             <?php else: ?>
-                                <?php if ($isDone && !$canUndo): ?>
+                                <?php if ($statusClass === 'done' && !$canUndo): ?>
                                     <button type="button" class="task-status-btn placeholder" tabindex="-1" aria-hidden="true" disabled></button>
-                                <?php elseif ($statusClass === 'soon'): ?>
-                                    <button type="button" class="task-status-btn soon" tabindex="-1" aria-hidden="true" disabled></button>
                                 <?php else: ?>
-                                    <button type="button" class="task-status-btn <?= $isDone ? 'is-done' : '' ?>" data-task-id="<?= $task['id'] ?>" aria-label="<?= $isDone ? 'Undo' : 'Mark done' ?>">
-                                        <span class="material-symbols-outlined"><?= $isDone ? 'undo' : 'check_small' ?></span>
+                                    <button type="button" class="task-status-btn <?= $statusClass === 'done' ? 'is-done' : '' ?>" data-task-id="<?= $task['id'] ?>" aria-label="<?= $statusClass === 'done' ? 'Undo' : 'Mark done' ?>">
+                                        <span class="material-symbols-outlined"><?= $statusClass === 'done' ? 'undo' : 'check_small' ?></span>
                                     </button>
                                 <?php endif; ?>
                             <?php endif; ?>
