@@ -136,7 +136,7 @@ $zones = $zoneStmt->fetchAll();
                                     <span class="material-symbols-outlined info-icon">info</span>
                                 </button>
                             </div>
-                            <div class="task-meta-zone">
+                            <div class="task-meta-line">
                                 <?= htmlspecialchars($task['room']) ?> &middot; <em><?= htmlspecialchars($task['total_time']) ?>m</em> &middot; <?= formatFrequencyDetailHtml($task['frequency'], $task['day_of_week'], $task['week_of_month']) ?>
                             </div>
                             <div class="assign-previous" style="display:none;"></div>

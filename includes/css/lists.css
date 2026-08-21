@@ -53,14 +53,6 @@ span.account-icon, span.info-icon, span.housemate-icon {
     color: var(--color-citrus-orange);
     font-size: 0.8rem;
 }
-.assign-summary {
-    float: right;
-    color: var(--color-ice500);
-    font-size: 0.85rem;
-    font-weight: 400;
-    text-transform: none;
-    font-family: var(--font-display);
-}
 .assign-description {
     margin-top: 0;
 }

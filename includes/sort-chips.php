@@ -1,10 +1,13 @@
 <?php /** @var string $page */ ?>
 <?php /** @var array $currentParams */ ?>
 <?php /** @var string $sort */ ?>
-<?php $showDateSort = $showDateSort ?? false; ?>
+<?php 
+$showDateSort = $showDateSort ?? false; 
+$showStatusSort = $showStatusSort ?? false;
+?>
 <div class="filter-section">
     <details class="filter-dropdown" open>
-        <summary class="filter-summary">
+        <summary class="filter-summary sort-by">
             <div class="filter-title" id="filter-sort">
                 <span class="material-symbols-outlined filter-icon">
                 sort
@@ -14,6 +17,9 @@
             <span class="material-symbols-outlined chevron">keyboard_arrow_up</span>
         </summary>
         <div class="filter-group">
+            <?php if ($showStatusSort): ?>
+                <a href="<?= taskFilterLink($page, $currentParams, ['sort' => 'status']) ?>" class="chip <?= $sort == 'status' ? 'chip-active' : '' ?>">Status</a>
+            <?php endif; ?>
             <?php if ($showDateSort): ?>
                 <a href="<?= taskFilterLink($page, $currentParams, ['sort' => 'date']) ?>" class="chip <?= $sort == 'date' ? 'chip-active' : '' ?>">Date</a>
             <?php endif; ?>

@@ -26,7 +26,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 22px;
+    gap: 20px;
     padding-top: 12px;
     padding-left: 12px;
 }
@@ -72,7 +72,7 @@
 }
 .zone-progress-bar {
     height: 8px;
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: var(--color-ice100);
     border-radius: var(--radius-pill);
     overflow: hidden;
     position: relative;
@@ -98,15 +98,6 @@
     font-size: var(--font-subsection-size);
 }
 /* Zone detail page */
-.zone-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.zone-icon-lg {
-    width: 48px;
-    height: 48px;
-}
 .zone-title-row {
     display: flex;
     align-items: center;

@@ -4,7 +4,7 @@
 $hasBeenCompleted = !empty($task['last_completed']);
 $rawStatus = $task['status'] ?? 'due';
 $isDone = $rawStatus === 'idle' && $hasBeenCompleted;
-$completedToday = wasCompletedToday($task['last_completed']);
+$completedToday = wasCompletedToday($task['last_completed'] ?? null);
 $statusClass = getDisplayStatus($rawStatus, $completedToday);
 $statusLabel = ucfirst($statusClass);
 
@@ -83,7 +83,7 @@ $canUndo = $isDone && ($isHead || (!empty($allowUndo) && $isAssignedToMe));
                                 <?php if ($statusClass === 'done' && !$canUndo): ?>
                                     <button type="button" class="task-status-btn placeholder" tabindex="-1" aria-hidden="true" disabled></button>
                                 <?php else: ?>
-                                    <button type="button" class="task-status-btn <?= $statusClass === 'done' ? 'is-done' : '' ?>" data-task-id="<?= $task['id'] ?>" aria-label="<?= $statusClass === 'done' ? 'Undo' : 'Mark done' ?>">
+                                    <button type="button" class="task-status-btn <?= $statusClass === 'done' ? 'is-done' : '' ?>" data-task-id="<?= $task['id'] ?>" data-room="<?= htmlspecialchars($task['room']) ?>" aria-label="<?= $statusClass === 'done' ? 'Undo' : 'Mark done' ?>">
                                         <span class="material-symbols-outlined"><?= $statusClass === 'done' ? 'undo' : 'check_small' ?></span>
                                     </button>
                                 <?php endif; ?>

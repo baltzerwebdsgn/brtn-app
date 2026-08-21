@@ -2,8 +2,13 @@
 $cardActions = 'status';
 $allowUndo = true;
 $showAssignee = false;
+$zoneGridScope = 'mine'; 
+$page = 'home';
+$sort = $_GET['sort'] ?? 'status';
+$showStatusSort = true;
+$currentParams = ['sort' => $sort];
 
-$stmt = $pdo->prepare("
+$query = "
     SELECT
         household_tasks.id,
         household_tasks.assigned_to,
@@ -24,7 +29,9 @@ $stmt = $pdo->prepare("
         household_tasks.assigned_to = :user_id
         OR household_tasks.id IN (SELECT DISTINCT task_id FROM task_history WHERE user_id = :user_id2)
     )
-");
+";
+$query = applySortOrder($query, $sort);
+$stmt = $pdo->prepare($query);
 $stmt->execute([
     'household_id' => $_SESSION['household_id'],
     'user_id' => $_SESSION['user_id'],
@@ -58,10 +65,25 @@ foreach ($candidateTasks as $task) {
         $dueTasks[] = $task;
     }
 }
+if ($sort === 'status') {
+    $statusRank = ['overdue' => 1, 'due' => 2, 'soon' => 3, 'done' => 4];
+    $byStatusZoneTitle = function ($a, $b) use ($statusRank) {
+        $rankA = $statusRank[getDisplayStatus($a['status'], wasCompletedToday($a['last_completed']))] ?? 5;
+        $rankB = $statusRank[getDisplayStatus($b['status'], wasCompletedToday($b['last_completed']))] ?? 5;
+        if ($rankA !== $rankB) {
+            return $rankA <=> $rankB;
+        }
+        $roomCmp = strcasecmp($a['room'], $b['room']);
+        return $roomCmp !== 0 ? $roomCmp : strcasecmp($a['name'], $b['name']);
+    };
+    usort($dueTasks, $byStatusZoneTitle);
+    usort($completedTasks, $byStatusZoneTitle);
+}
 
 ?>
 
 <h2>To Do</h2>
+<?php include 'includes/sort-chips.php'; ?>
 <div id="todo-tasks-list">
     <?php foreach ($dueTasks as $task): ?>
         <?php include 'includes/task-card.php'; ?>
@@ -88,3 +110,4 @@ foreach ($candidateTasks as $task) {
         <?php include 'includes/task-card.php'; ?>
     <?php endforeach; ?>
 </div>
+<?php include 'includes/zones.php'; ?>

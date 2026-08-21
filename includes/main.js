@@ -154,6 +154,38 @@ function updatePreviouslyNote(taskRow, newHousemateId) {
     }
 }
 
+// Keeps a Home "My Zones" card's count/progress bar in sync after a complete/undo,
+// without needing a full page reload. Only the "completed" numerator moves here —
+// whether a task still counts as "due this week" at all can also shift (e.g. a
+// Monthly task rolling out of this week's window), but that needs server data this
+// response doesn't return, so a full reload stays the source of truth for that case.
+function updateZoneCard(room, delta) {
+    var zoneCard = document.querySelector('.zone-card[data-zone-name="' + CSS.escape(room) + '"]');
+    if (!zoneCard) return;
+
+    var total = parseInt(zoneCard.dataset.zoneTotal, 10);
+    var completed = parseInt(zoneCard.dataset.zoneCompleted, 10) + delta;
+    completed = Math.max(0, Math.min(total, completed));
+    zoneCard.dataset.zoneCompleted = completed;
+
+    var countEl = zoneCard.querySelector('.zone-task-count');
+    if (countEl) {
+        if (total === 0) {
+            countEl.textContent = '0 Tasks';
+        } else if (total === 1) {
+            countEl.textContent = '1 Task';
+        } else {
+            countEl.textContent = completed + '/' + total + ' Tasks';
+        }
+    }
+
+    var fill = zoneCard.querySelector('.zone-progress-fill');
+    if (fill) {
+        var progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+        fill.style.width = progress + '%';
+    }
+}
+
 // ---- Mark a task done/undone (optimistic UI + server sync) ----
 document.querySelectorAll('.task-status-btn').forEach(function (btn) {
     btn.addEventListener('click', function () {
@@ -222,6 +254,15 @@ document.querySelectorAll('.task-status-btn').forEach(function (btn) {
                     var todoSectionSameDay = document.getElementById('todo-tasks-list');
                     if (todoSectionSameDay) todoSectionSameDay.appendChild(card);
                 }
+                var wasDone = isDone;
+                var isNowDone = data.status === 'done';
+                var zoneDelta = 0;
+                if (!wasDone && isNowDone) {
+                    zoneDelta = 1;
+                } else if (wasDone && !isNowDone) {
+                    zoneDelta = -1;
+                }
+                updateZoneCard(btn.dataset.room, zoneDelta);
                 updateTodoEmptyState();
             });
     });

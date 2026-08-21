@@ -6,10 +6,14 @@
 <?php /** @var array $zones */ ?>
 <?php /** @var array $housemates */ ?>
 <?php /** @var string $statusFilter */ ?>
+<?php /** @var string $isHomeView*/ ?>
 
-<?php $showZoneFilter = $showZoneFilter ?? true; ?>
-<?php $showAssigneeFilter = $showAssigneeFilter ?? true; ?>
-<?php $showStatusFilter = $showStatusFilter ?? true; ?>
+<?php 
+$showZoneFilter = $showZoneFilter ?? true;
+$showAssigneeFilter = $showAssigneeFilter ?? true; 
+$showStatusFilter = $showStatusFilter ?? true; 
+?>
+
 <div class="filter-section">
     <details class="filter-dropdown" open>
         <summary class="filter-summary">

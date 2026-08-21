@@ -7,6 +7,8 @@
 // $from remembers which settings page the user came from, so the back link and any
 // post-save redirects return them there instead of always landing on Settings.
 $from = $_GET['from'] ?? 'settings';
+$isHomeView = $from === 'home';
+$showAssigneeFilter = !$isHomeView;
 $isHead = $_SESSION['role'] === 'head';
 $zoneId = isset($_GET['id']) ? (int) $_GET['id'] : null;
 // $replacingZoneId is only set while deleting a zone that still has tasks: the user
@@ -31,10 +33,22 @@ if ($zoneId) {
         exit;
     }
 }
+$zoneTotalTaskCount = 0;
+if ($zone) {
+    $countStmt = $pdo->prepare("
+        SELECT COUNT(*) FROM household_tasks
+        LEFT JOIN task_library ON household_tasks.library_task_id = task_library.id
+        WHERE household_tasks.household_id = :household_id
+        AND household_tasks.is_active = 1
+        AND COALESCE(household_tasks.custom_room, task_library.room) = :zone_name
+    ");
+    $countStmt->execute(['household_id' => $_SESSION['household_id'], 'zone_name' => $zone['name']]);
+    $zoneTotalTaskCount = (int) $countStmt->fetchColumn();
+}
 
 $availableIcons = ['basement', 'bathroom', 'bedroom', 'bedroom-alt-1', 'bedroom-alt-2', 'cat-tree', 'closet', 'dining', 'garden', 'hallway', 'houseplant', 'kitchen', 'kitchen-alt-1', 'laundry', 'living-room', 'nursery', 'office', 'outside', 'storage', 'toilet', 'trash', 'trees'];
 $filter = $_GET['filter'] ?? 'All';
-$assignee_filter = $_GET['assignee'] ?? 'All';
+$assignee_filter = $isHomeView ? (string) $_SESSION['user_id'] : ($_GET['assignee'] ?? 'All');
 $statusFilter = $_GET['status'] ?? 'All';
 $sort = $_GET['sort'] ?? 'title';
 $showZoneFilter = false;
@@ -108,10 +122,6 @@ if ($zone) {
         $task['status'] = $status['status'] ?? 'due';
     }
     unset($task);
-
-    // Counted before the status filter runs, since this is also used later to decide
-    // whether deleting the zone needs a "move these tasks somewhere first" step.
-    $zoneTaskCount = count($zoneTasks);
 
     // Status can't be filtered in SQL (see the loop above), so unlike $filter/
     // $assignee_filter this one is applied in PHP after the fact.
@@ -246,10 +256,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_zone']) && $is
 
     $reassignToId = isset($_POST['reassign_to']) ? (int) $_POST['reassign_to'] : null;
 
-    if ($zoneTaskCount > 0 && !$reassignToId) {
+    if ($zoneTotalTaskCount > 0 && !$reassignToId) {
         $zoneError = 'Please choose a zone to move these tasks to.';
     } else {
-        if ($zoneTaskCount > 0) {
+        if ($zoneTotalTaskCount > 0) {
             $targetStmt = $pdo->prepare("SELECT name FROM zones WHERE id = :id AND household_id = :household_id");
             $targetStmt->execute(['id' => $reassignToId, 'household_id' => $_SESSION['household_id']]);
             $targetZone = $targetStmt->fetch();
@@ -294,17 +304,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_zone']) && $is
         $backHref = 'index.php?page=' . htmlspecialchars($from) . '#zones-section';
         if (!$zone && $replacingZoneId) {
             $backHref = 'index.php?page=zone&id=' . $replacingZoneId . '&delete=1&from=' . htmlspecialchars($from);
+        } elseif ($isHomeView) {
+            $backHref = 'index.php?page=home';
         }
+
         ?>
         <a href="<?= $backHref ?>">&larr;</a>
         <h1><?= $zone ? htmlspecialchars($zone['name']) : ($replacingZoneId ? 'Replacement Zone' : 'New Zone') ?></h1>
     </div>
-    <?php if ($isHead && $zone && !$isEditing && !$isDeleting): ?>
+    <?php if ($isHead && $zone && !$isEditing && !$isDeleting && !$isHomeView): ?>
         <div class="zone-title-actions">
             <a href="index.php?page=zone&id=<?= $zone['id'] ?>&edit=1&from=<?= htmlspecialchars($from) ?>" class="edit-task-btn">
                 <span class="material-symbols-outlined">edit</span>
             </a>
-            <?php if ($zoneTaskCount > 0): ?>
+            <?php if ($zoneTotalTaskCount > 0): ?>
                 <!-- Zone has tasks: send to the delete/reassign view instead of deleting outright -->
                 <a href="index.php?page=zone&id=<?= $zone['id'] ?>&delete=1&from=<?= htmlspecialchars($from) ?>" class="remove-task-btn">
                     <span class="danger material-symbols-outlined">delete</span>
@@ -331,8 +344,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_zone']) && $is
     <?php include 'includes/task-filters.php'; ?>
     <?php include 'includes/sort-chips.php'; ?>
     <?php if (empty($zoneTasks)): ?>
-        <?php if ($zoneTaskCount === 0): ?>
-            <p class="text">This zone doesn't have any tasks yet. Assign an existing task here, or create a new one to get started.</p>
+        <?php if ($zoneTotalTaskCount === 0): ?>
+            <?php if ($isHomeView): ?>
+                <p class="text">You don't have any tasks in this zone.</p>
+            <?php else: ?>
+                <p class="text">This zone doesn't have any tasks yet. Assign an existing task here, or create a new one to get started.</p>
+            <?php endif; ?>
         <?php else: ?>
             <p class="text">No tasks match the selected filters.</p>
         <?php endif; ?>
@@ -381,6 +398,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_zone']) && $is
                     </label>
                 <?php endforeach; ?>
             </div>
+            <p class="text" id="new-zone-text"><em>* If icon is not selected a best matched to the name will be attempt or a default will be chosen.</em></p>
         </div>
         <div class="form-group">
             <button type="submit" class="btn-primary"><?= $zone ? 'Save Changes' : 'Create Zone' ?></button>
@@ -395,7 +413,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_zone']) && $is
             <a href="index.php?page=zone&id=<?= $zone['id'] ?>&from=<?= htmlspecialchars($from) ?>" class="btn-close" aria-label="Cancel">
                 <span class="material-symbols-outlined">close</span>
             </a>
-            <p class="text replacement-zone-text"><span class="danger">This zone has <?= $zoneTaskCount ?> task<?= $zoneTaskCount === 1 ? '' : 's' ?> assigned to it.</span><br> Choose a zone to move <?= $zoneTaskCount === 1 ? 'it' : 'them' ?> to before deleting.</p>
+            <p class="text replacement-zone-text"><span class="danger">This zone has <?= $zoneTotalTaskCount ?> task<?= $zoneTotalTaskCount === 1 ? '' : 's' ?> assigned to it.</span><br> Choose a zone to move <?= $zoneTotalTaskCount === 1 ? 'it' : 'them' ?> to before deleting.</p>
         </div>
         <?php if (empty($otherZones)): ?>
             <p class="text">There's no other zone to move these tasks to yet.</p>

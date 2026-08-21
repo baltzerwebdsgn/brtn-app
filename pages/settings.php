@@ -112,7 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name-new-task']) && $
     }
     $taskDescription = trim($_POST['description-new-task'] ?? '');
     $taskTime = (int) $_POST['time-new-task'];
-    $taskTime = (int) $_POST['time-new-task'];
     if ($taskTime < 1) {
         $taskError = 'Completion time must be at least 1 minute.';
     }
