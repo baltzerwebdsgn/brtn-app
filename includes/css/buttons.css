@@ -112,3 +112,8 @@ button.remove-task-btn {
     padding: 14px;
     color: var(--color-ice700);
 }
+.btn-primary:disabled {
+    background: var(--color-ice300);
+    color: var(--color-ice500);
+    cursor: not-allowed;
+}

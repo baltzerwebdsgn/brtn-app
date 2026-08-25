@@ -143,7 +143,7 @@ $zones = $zoneStmt->fetchAll();
                         </div>
                         <div class="assign-avatars">
                             <?php foreach ($housemates as $hm): ?>
-                                <input type="radio" id="assign-<?= $task['id'] ?>-<?= $hm['id'] ?>" name="assignment[<?= $task['id'] ?>]" value="<?= $hm['id'] ?>" class="addTask" <?= ((int) $task['assigned_to'] === (int) $hm['id']) ? 'checked' : '' ?>>
+                                <input type="radio" id="assign-<?= $task['id'] ?>-<?= $hm['id'] ?>" name="assignment[<?= $task['id'] ?>]" value="<?= $hm['id'] ?>" class="track-changes addTask" <?= ((int) $task['assigned_to'] === (int) $hm['id']) ? 'checked' : '' ?>>
                                 <label for="assign-<?= $task['id'] ?>-<?= $hm['id'] ?>" class="addTask profile-icon-sm">
                                     <?= strtoupper(substr($hm['name'] ?? $hm['username'], 0, 1)) ?>
                                 </label>
@@ -155,6 +155,6 @@ $zones = $zoneStmt->fetchAll();
         </div>
     <?php endforeach; ?>
     <div class="task-card">
-        <button type="submit" class="btn-primary">Save</button>
+        <button type="submit" class="btn-primary" disabled>Save</button>
     </div>
 </form>

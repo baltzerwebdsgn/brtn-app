@@ -75,7 +75,7 @@ span.account-icon, span.info-icon, span.housemate-icon {
     align-items: center;
     justify-content: space-between;
 }
-.housemate-info {
+.housemate-info, .profile-info, #password-message {
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -91,12 +91,14 @@ span.account-icon, span.info-icon, span.housemate-icon {
     justify-content: flex-end;
     gap: var(--space-sm);
 }
-.housemate-name-card {
+.housemate-name-card,
+.role,
+#profile-name-display,
+#profile-email-display,
+.password-message-text,
+.profile-subheadings {
     margin: 0;
 }
-.role {
-    margin-bottom: 0;
-}
-.replacement-zones {
+.replacement-zones, #account-details {
     margin-bottom: 12px;
 }

@@ -267,3 +267,39 @@ document.querySelectorAll('.task-status-btn').forEach(function (btn) {
             });
     });
 });
+// Keeps a form's Save button disabled until something the caller cares about
+// actually changes from its value at page-load — reused by both the Profile
+// form and Assign All Tasks' reassignment form. Pass a selector matching only
+// the fields that should count (e.g. skip a CSRF token, or Profile's current-
+// password field, which shouldn't itself enable Save just by being typed into).
+function initSmartSaveButton(form, trackedSelector) {
+    var saveButton = form.querySelector('button[type="submit"]');
+    if (!saveButton) return;
+
+    var fields = form.querySelectorAll(trackedSelector);
+    var initialValues = new Map();
+    fields.forEach(function (field) {
+        initialValues.set(field, (field.type === 'radio' || field.type === 'checkbox') ? field.checked : field.value);
+    });
+
+    function checkForChanges() {
+        var hasChanges = false;
+        fields.forEach(function (field) {
+            var currentValue = (field.type === 'radio' || field.type === 'checkbox') ? field.checked : field.value;
+            if (currentValue !== initialValues.get(field)) {
+                hasChanges = true;
+            }
+        });
+        saveButton.disabled = !hasChanges;
+    }
+
+    fields.forEach(function (field) {
+        field.addEventListener('input', checkForChanges);
+        field.addEventListener('change', checkForChanges);
+    });
+
+    saveButton.disabled = true;
+}
+
+initSmartSaveButton(document.getElementById('profile-form'), '.track-changes');
+initSmartSaveButton(document.getElementById('assign-form'), '.track-changes');
