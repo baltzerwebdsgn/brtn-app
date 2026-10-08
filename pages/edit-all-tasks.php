@@ -92,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_task_id']) && 
     <a href="index.php?page=<?= htmlspecialchars($from) ?>">&larr;</a>
     <h1>Edit All Tasks</h1>
 </div>
+<p class="text setting-subpage-subtitle">Edit, reassign, or remove any task across your whole household from one place.</p>
 <?php include 'includes/task-filters.php'; ?>
 <?php include 'includes/sort-chips.php'; ?>
 <div class="task-list">

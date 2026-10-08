@@ -95,7 +95,11 @@ if ($isMineScope) {
     }
 }
 ?>
-<h2>Zones</h2>
+<?php if ($isMineScope): ?>
+    <h2>My Zones</h2>
+<?php else: ?>
+    <h2>Zones</h2>
+<?php endif; ?>
 <div class="zone-grid">
     <?php foreach ($zoneCards as $zoneCard): ?>
         <?php

@@ -15,7 +15,7 @@ $showStatusFilter = $showStatusFilter ?? true;
 ?>
 
 <div class="filter-section">
-    <details class="filter-dropdown" open>
+    <details class="filter-dropdown" closed>
         <summary class="filter-summary">
             <div class="filter-title">
                 <span class="material-symbols-outlined filter-icon">

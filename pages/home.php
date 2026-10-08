@@ -82,7 +82,7 @@ if ($sort === 'status') {
 
 ?>
 
-<h2>To Do</h2>
+<h2>My To Do</h2>
 <?php include 'includes/sort-chips.php'; ?>
 <div id="todo-tasks-list">
     <?php foreach ($dueTasks as $task): ?>
@@ -104,7 +104,7 @@ if ($sort === 'status') {
         </div>
     </div>
 </div> -->
-<h2>Completed Tasks</h2>
+<h2>My Completed Tasks</h2>
 <div id="completed-tasks-list">
     <?php foreach ($completedTasks as $task): ?>
         <?php include 'includes/task-card.php'; ?>

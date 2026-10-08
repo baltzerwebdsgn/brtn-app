@@ -8,11 +8,13 @@ h2 {
     font-family: (var(--font-body));
     color: var(--color-ice500);
     font-size:  var(--font-section-size);
+    margin: 14px  0 var(--space-sm);
 }
 h1 {
     font-family: var(--font-display);
     color: var(--color-ice900);
     font-size: var(--font-heading-size);
+    margin: 0;
 }
 h3 {
     font-family: var(--font-body);
@@ -31,7 +33,7 @@ b {
     align-items:baseline;
     font:700 1em var(--font-display);
     font-size:1em;
-
+    margin-bottom: 16px;
 }
 .brand-wordmark .logo-slot{
     position:relative;

@@ -91,7 +91,6 @@ label.addTask.chip {
     align-items: center;
     justify-content: flex-start;
     gap: var(--space-xs);
-    margin-bottom: 10px;
     color: var(--color-ice700);
 }
 .filter-icon {
@@ -107,6 +106,7 @@ label.addTask.chip {
     font-size: var(--font-subsection-size);
     color: var(--color-ice500);
     list-style: none;
+    margin-bottom: var(--space-sm);
 }
 .filter-summary::-webkit-marker,
 .filter-summary::marker {
@@ -116,8 +116,7 @@ label.addTask.chip {
     display: flex;
     flex-wrap: wrap;
     gap: clamp(4px, 1.5vw, 8px);
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: var(--space-sm) 0;
 }
 .chevron {
     display: inline-block;
@@ -126,7 +125,4 @@ label.addTask.chip {
 }
 details:not([open]) .chevron {
     transform: rotate(180deg);
-}
-.sort-by {
-    margin-bottom: 10px;
 }

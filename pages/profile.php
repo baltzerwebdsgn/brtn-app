@@ -71,12 +71,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <div class="task-card profile-summary">
-    <div class="profile-info">
-        <span class="profile-icon active profile-summary-icon"><?= htmlspecialchars(strtoupper(substr($user['name'] ?? $user['username'], 0, 1))) ?></span>
-        <div class="profile-summary-text">
-            <h3 id="profile-name-display"><?= htmlspecialchars($user['name'] ?? $user['username']) ?></h3>
-            <p class="text" id="profile-email-display"><?= htmlspecialchars($user['email']) ?></p>
+    <div class="profile-content">
+        <div class="profile-info">
+            <span class="profile-icon active profile-summary-icon"><?= htmlspecialchars(strtoupper(substr($user['name'] ?? $user['username'], 0, 1))) ?></span>
+            <div class="profile-summary-text">
+                <h3 id="profile-name-display"><?= htmlspecialchars($user['name'] ?? $user['username']) ?></h3>
+                <p class="text" id="profile-email-display"><?= htmlspecialchars($user['email']) ?></p>
+            </div>
         </div>
+        <form action="index.php?page=logout" method="POST" id="logout-btn">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+            <button type="submit"> <span class="account-icon material-symbols-outlined">logout</span><h3 class="account-text">Log out</h3></button>
+        </form>
     </div>
 </div>
 

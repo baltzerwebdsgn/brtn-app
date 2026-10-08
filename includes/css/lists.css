@@ -102,3 +102,85 @@ span.account-icon, span.info-icon, span.housemate-icon {
 .replacement-zones, #account-details {
     margin-bottom: 12px;
 }
+#distribution-by-frequency {
+    display: none;
+}
+.distribution-section:has(#distribution-frequency:checked) #distribution-by-housemate {
+    display: none;
+}
+.distribution-section:has(#distribution-frequency:checked) #distribution-by-frequency {
+    display: block;
+}
+.metrics-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex: 1;
+    min-width: 0;
+}
+.metrics-row-label {
+    width: 60px;
+    flex-shrink: 0;
+    font-size: var(--font-text-size);
+    color: var(--color-ice700);
+}
+.metrics-bar {
+    flex: 1;
+    min-width: 0;
+}
+.metrics-row-count {
+    width: 20px;
+    flex-shrink: 0;
+    text-align: right;
+    font-size: var(--font-text-size);
+    color: var(--color-ice500);
+}
+.metrics-subgroup {
+    margin: var(--space-sm) 0;
+    padding-left: 70px;
+    padding-right: 16px;
+}
+.metrics-subgroup-label {
+    text-transform: capitalize;
+    font-size: var(--font-small-size);
+    color: var(--color-ice500);
+    margin-bottom: 8px;
+}
+.metrics-subrow .metrics-row-label {
+    width: 40px;
+}
+.metrics-bar-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    gap: var(--space-sm);
+}
+.metrics-bar-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+}
+.metrics-bar-count {
+    font-size: var(--font-text-size);
+    font-weight: 600;
+    color: var(--color-ice700);
+}
+.metrics-bar-track {
+    width: 12px;
+    height: 60px;
+    border-radius: var(--radius-pill);
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+}
+.metrics-bar-vertical-fill {
+    width: 100%;
+    background-color: var(--color-citrus-lemon);
+    border-radius: var(--radius-pill);
+}
+.metrics-bar-label {
+    font-size: var(--font-small-size);
+    color: var(--color-ice500);
+}

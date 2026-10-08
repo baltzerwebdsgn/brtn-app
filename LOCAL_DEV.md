@@ -33,16 +33,16 @@ Any device on the same WiFi can access the app using your Mac's IP.
 > **Security note:** Anything on the same WiFi can reach both the website and the MySQL database directly (port 3306, root credentials) while this is running. Don't leave it up on shared/public networks.
 
 
-| Service    | URL                            |
-|------------|--------------------------------|
-| Website    | http://10.0.0.15:8080          |
-| phpMyAdmin | http://10.0.0.15:8081          |
+| Service    | URL                                      |
+|------------|-------------------------------------------|
+| Website    | http://&lt;your-computer's-IP&gt;:8080    |
+| phpMyAdmin | http://&lt;your-computer's-IP&gt;:8081    |
 
 > **Note:** This IP can change if your router reassigns it. To make it permanent, set a static IP in **System Settings → Network → Wi-Fi → Details → TCP/IP**:
 > - Configure IPv4: **Manually**
-> - IP Address: `10.0.0.11`
+> - IP Address: `<your-computer's-IP>`
 > - Subnet Mask: `255.255.255.0`
-> - Router: `10.0.0.1` *(verify with `netstat -nr | grep default | head -1`)*
+> - Router: `<your-router's-IP>` *(verify with `netstat -nr | grep default | head -1`)*
 
 ## Stop the Environment
 

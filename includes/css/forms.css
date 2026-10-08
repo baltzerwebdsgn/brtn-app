@@ -1,6 +1,6 @@
 .form-group {
     display: block;
-    margin-bottom: 16px;
+    margin-bottom: var(--space-sm);
 }
 input.addRoommate.input-error,
 input.addTask.input-error,
@@ -114,4 +114,14 @@ input:checked + .slider:before {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.profile-summary {
+  margin-top: 10px;
+}
+.profile-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+
 }

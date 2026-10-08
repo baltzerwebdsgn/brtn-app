@@ -117,3 +117,6 @@ button.remove-task-btn {
     color: var(--color-ice500);
     cursor: not-allowed;
 }
+.distribution-toggle {
+    margin-bottom: var(--space-sm);
+}

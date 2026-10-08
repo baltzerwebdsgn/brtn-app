@@ -613,11 +613,9 @@ $activeEditId = $editTaskId ?? ($editingTask['id'] ?? null);
                     <?php endforeach; ?>
                 </div>
             </div>
-            <div class="form-group">
-                <button type="submit" class="btn-primary">
-                    <span><?= $activeEditId ? 'Save Changes' : 'Save' ?></span>
-                </button>
-            </div>
+            <button type="submit" class="btn-primary">
+                <span><?= $activeEditId ? 'Save Changes' : 'Save' ?></span>
+            </button>
             <?php if ($duplicateTask): ?>
                 <p class="danger">
                     A task named "<strong><?= htmlspecialchars($duplicateTask['task_name']) ?></strong>" already exists — <strong><?= htmlspecialchars(formatFrequencyDetail($duplicateTask['frequency'], $duplicateTask['day_of_week'], $duplicateTask['week_of_month'])) ?></strong>.

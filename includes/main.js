@@ -273,6 +273,7 @@ document.querySelectorAll('.task-status-btn').forEach(function (btn) {
 // the fields that should count (e.g. skip a CSRF token, or Profile's current-
 // password field, which shouldn't itself enable Save just by being typed into).
 function initSmartSaveButton(form, trackedSelector) {
+    if (!form) return;
     var saveButton = form.querySelector('button[type="submit"]');
     if (!saveButton) return;
 
