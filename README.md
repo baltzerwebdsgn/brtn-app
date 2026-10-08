@@ -1,6 +1,8 @@
 # BRIGHT'N
 
-A household task-tracking web app: a "head of household" account manages roommates, custom zones (rooms), and recurring chores, while roommates see what's assigned to them and check it off. Built from the ground up in PHP and raw SQL to learn the full stack underneath the frameworks — no ORM, no router package, no CSS framework.
+A household task-tracking web app: a "head of household" account manages roommates, custom zones (rooms), and recurring chores, while roommates see what's assigned to them and check it off. Built in PHP and raw SQL to learn the full stack underneath the frameworks, with no ORM, no router package, and no CSS framework.
+
+This project was built through agentic coding (using Claude Code as a development partner), not written by hand line by line. The architecture, schema, and framework-free approach below were deliberate choices made to learn what frameworks normally abstract away.
 
 ## Tech Stack
 
@@ -15,12 +17,12 @@ A household task-tracking web app: a "head of household" account manages roommat
 
 ## Why no framework?
 
-This project is intentionally built without Laravel/Symfony, a JS framework, or an ORM. The goal was to understand what those tools abstract away — routing, sessions, query building, auth — by implementing a minimal version of each by hand:
+This project is intentionally built without Laravel/Symfony, a JS framework, or an ORM. The goal was to understand what those tools abstract away (routing, sessions, query building, auth) by implementing a minimal version of each:
 
-- **Routing** — a single `index.php` front controller dispatches to `pages/*.php` based on a `?page=` query param ([index.php](index.php))
-- **Auth** — session-backed login guards (`requireLogin()`) and manual CSRF token generation/verification on every mutating request ([includes/auth.php](includes/auth.php))
-- **Data access** — PDO with prepared statements directly against a normalized MySQL schema, no query builder
-- **UI state** — vanilla JS (`includes/main.js`) handling optimistic UI updates (e.g. live-updating zone/task cards on complete/undo) without a reactive framework
+- **Routing**: a single `index.php` front controller dispatches to `pages/*.php` based on a `?page=` query param ([index.php](index.php))
+- **Auth**: session-backed login guards (`requireLogin()`) and manual CSRF token generation/verification on every mutating request ([includes/auth.php](includes/auth.php))
+- **Data access**: PDO with prepared statements directly against a normalized MySQL schema, no query builder
+- **UI state**: vanilla JS (`includes/main.js`) handling optimistic UI updates (e.g. live-updating zone/task cards on complete/undo) without a reactive framework
 
 ## Features
 
@@ -37,11 +39,11 @@ This project is intentionally built without Laravel/Symfony, a JS framework, or 
 
 Core tables (see [sql/schema.sql](sql/schema.sql)):
 
-- `households` / `users` — multi-tenant household membership with roles
-- `zones` — rooms/areas within a household
-- `task_library` — reusable task templates
-- `household_tasks` — tasks assigned within a specific household
-- `task_day_status` / `task_history` — per-day completion state and historical log
+- `households` / `users`: multi-tenant household membership with roles
+- `zones`: rooms/areas within a household
+- `task_library`: reusable task templates
+- `household_tasks`: tasks assigned within a specific household
+- `task_day_status` / `task_history`: per-day completion state and historical log
 
 ## Running Locally
 
