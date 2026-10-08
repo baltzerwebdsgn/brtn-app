@@ -2,7 +2,7 @@
 
 A household task-tracking web app: a "head of household" account manages roommates, custom zones (rooms), and recurring chores, while roommates see what's assigned to them and check it off. Built in PHP and raw SQL to learn the full stack underneath the frameworks, with no ORM, no router package, and no CSS framework.
 
-This project was built through agentic coding (using Claude Code as a development partner). The architecture, schema, and framework-free approach below were deliberate choices made to learn what frameworks normally abstract away.
+This project was built through a combination of coding by hand and agentic coding (using Claude Code as a development partner). The architecture, schema, and framework-free approach below were deliberate choices made to learn what frameworks normally abstract away.
 
 ## Tech Stack
 
